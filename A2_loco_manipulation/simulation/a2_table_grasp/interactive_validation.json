@@ -1,0 +1,36 @@
+{
+  "status": "PASS",
+  "preview": {
+    "dirty": true,
+    "bottle": [
+      0.82,
+      0,
+      0.905
+    ],
+    "table": [
+      1.02,
+      0,
+      0.775
+    ],
+    "cloud": false
+  },
+  "reset": {
+    "dirty": false,
+    "table": [
+      0.9199999999999999,
+      0,
+      0.735
+    ]
+  },
+  "rerun": {
+    "parameters": {
+      "bottle_x": 0.74,
+      "table_z": 0.78,
+      "tcp_m": 0.095
+    },
+    "status": "success",
+    "success": true,
+    "point_count": 21946
+  },
+  "browser_errors": []
+}

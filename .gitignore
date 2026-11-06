@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.venv*/
+**/workspaces/
+**/runs/
+**/local_server*
+**/current_run*
+**/session.lock*
+*.log
+.env
+.env.*
+server_runtime.json

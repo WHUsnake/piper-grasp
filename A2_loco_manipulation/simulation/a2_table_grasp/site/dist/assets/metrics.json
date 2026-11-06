@@ -1,0 +1,88 @@
+{
+  "success": true,
+  "status": "success",
+  "parameters": {
+    "bottle_x": 0.7,
+    "bottle_y": 0.0,
+    "table_z": 0.5,
+    "tcp_m": 0.095
+  },
+  "tcp_m": 0.095,
+  "video_available": true,
+  "selected": {
+    "position": [
+      0.6901342146730325,
+      -0.00012000456493561906,
+      0.6161905829723129
+    ],
+    "rotation_world": [
+      [
+        -0.1736481741964127,
+        0.00019992956016779163,
+        0.9848077333299244
+      ],
+      [
+        3.4717403784777044e-05,
+        0.9999999800140855,
+        -0.00019689218090958148
+      ],
+      [
+        -0.9848077530122082,
+        -1.1259439561261964e-16,
+        -0.17364817766693036
+      ]
+    ],
+    "quaternion": [
+      7.657746467346054e-05,
+      0.7660444392914533,
+      -6.425612236406542e-05,
+      0.6427876064748647
+    ],
+    "width": 0.06400185823440552,
+    "score": 0.11225785315036774,
+    "raw_index": 5,
+    "geometry_refined": true,
+    "pad_center_from_link6_m": 0.105,
+    "pregrasp_distance": 0.10000000149011612,
+    "orientation_adaptation": "upright_cylinder_network_and_radial_search",
+    "adapted_elevation_deg": -10.0,
+    "network_rotation_world": [
+      [
+        0.023151814175416018,
+        0.6397092361358092,
+        0.7682682387701101
+      ],
+      [
+        -0.42840120693619793,
+        0.7006909185315588,
+        -0.5705301416954325
+      ],
+      [
+        -0.903291979038891,
+        -0.31591823291785565,
+        0.2902744747890579
+      ]
+    ],
+    "score_semantics": "parent_network_proposal_score; adapted orientation requires independent validation"
+  },
+  "grasp_strategy": "body_middle_pad_center_v2",
+  "pipeline": "ROS2_YOLO_GraspNet_MoveIt_TaskExecutor",
+  "oracle_segmentation": false,
+  "point_count": 4470,
+  "graspnet_inference_sec": 0.057452934968750924,
+  "min_hold_lift_m": 0.10241754623027599,
+  "bilateral_hold_fraction": 1.0,
+  "hold_contact_inset_median_m": 0.02999989076276515,
+  "close_contact_height_from_bottom_m": 0.11496702426534747,
+  "pad_support_verified": true,
+  "physical_attachment": false,
+  "object_pose_written_during_rollout": false,
+  "execute_robot": false,
+  "collision_scene": "robot_self_table_and_depth_fitted_bottle_with_attached_lift",
+  "source_paths": {
+    "perception": "src/perception/perception_node",
+    "generator": "src/manipulation/grasp_generation",
+    "planner": "src/manipulation/robot_planner",
+    "executor": "src/manipulation/task_executor"
+  }
+}

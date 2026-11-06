@@ -1,0 +1,18 @@
+{
+  "platform": "Linux-6.8.0-65-generic-x86_64-with-glibc2.35",
+  "system_python": "3.10.12 (main, Aug 31 2026, 10:18:17) [GCC 11.4.0]",
+  "ros_setup": "/opt/ros/humble/setup.bash",
+  "saved_ros_domain": 183,
+  "graspnet": {
+    "python": "search-grasp2/.venv-graspnet/bin/python",
+    "freeze_exit_code": 0
+  },
+  "perception": {
+    "python": "search-grasp2/.venv/bin/python",
+    "freeze_exit_code": 0
+  },
+  "mujoco": {
+    "python": "supermimic训练机械臂抓取/.venv/bin/python",
+    "freeze_exit_code": 0
+  }
+}

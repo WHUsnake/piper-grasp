@@ -1,0 +1,26 @@
+[
+  {
+    "parameters": {
+      "bottle_x": 0.72,
+      "bottle_y": 0.08,
+      "table_z": 0.76,
+      "tcp_m": 0.095
+    },
+    "success": true,
+    "min_hold_lift_m": 0.11423298851131991,
+    "bilateral_hold_fraction": 1.0,
+    "hold_contact_inset_median_m": 0.02999989076428801
+  },
+  {
+    "parameters": {
+      "bottle_x": 0.72,
+      "bottle_y": -0.08,
+      "table_z": 0.76,
+      "tcp_m": 0.095
+    },
+    "success": true,
+    "min_hold_lift_m": 0.114174883209054,
+    "bilateral_hold_fraction": 1.0,
+    "hold_contact_inset_median_m": 0.0299998907595768
+  }
+]

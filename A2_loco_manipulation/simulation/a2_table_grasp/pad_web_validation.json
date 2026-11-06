@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "parameters": {
+    "bottle_x": 0.52,
+    "table_z": 0.69,
+    "tcp_m": 0.085
+  },
+  "strategy": "body_middle_pad_center_v2",
+  "inset_display": "30.1 mm",
+  "height_display": "9.9 cm",
+  "success": true,
+  "mobile_overflow": false,
+  "browser_errors": []
+}

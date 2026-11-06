@@ -1,0 +1,44 @@
+[
+  {
+    "parameters": {
+      "bottle_x": 0.72,
+      "table_z": 0.76,
+      "tcp_m": 0.095
+    },
+    "success": true,
+    "grasp_strategy": "body_middle_pad_center_v2",
+    "close_contact_height_from_bottom_m": 0.11477879698391455,
+    "close_contact_inset_median_m": 0.02999989172091022,
+    "min_hold_lift_m": 0.11428402975596863,
+    "bilateral_hold_fraction": 1.0,
+    "pad_support_verified": true
+  },
+  {
+    "parameters": {
+      "bottle_x": 0.61,
+      "table_z": 0.63,
+      "tcp_m": 0.085
+    },
+    "success": true,
+    "grasp_strategy": "body_middle_pad_center_v2",
+    "close_contact_height_from_bottom_m": 0.10515047221510129,
+    "close_contact_inset_median_m": 0.0299998797547842,
+    "min_hold_lift_m": 0.11516160925922214,
+    "bilateral_hold_fraction": 1.0,
+    "pad_support_verified": true
+  },
+  {
+    "parameters": {
+      "bottle_x": 0.61,
+      "table_z": 0.6,
+      "tcp_m": 0.085
+    },
+    "success": true,
+    "grasp_strategy": "body_middle_pad_center_v2",
+    "close_contact_height_from_bottom_m": 0.10512396667785302,
+    "close_contact_inset_median_m": 0.029999879723433827,
+    "min_hold_lift_m": 0.1151841163357421,
+    "bilateral_hold_fraction": 1.0,
+    "pad_support_verified": true
+  }
+]

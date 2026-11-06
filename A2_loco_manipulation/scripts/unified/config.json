@@ -1,0 +1,28 @@
+{
+  "root": "/home/unitree/A2_loco_manipulation",
+  "goals": {
+    "bottle": {
+      "target_class": "bottle",
+      "stop_distance": 0.52
+    }
+  },
+  "travel_joint_deg": null,
+  "observation_joint_deg": [
+    0,
+    0,
+    0,
+    0,
+    5,
+    0
+  ],
+  "joint_tolerance_deg": 2.0,
+  "settle_seconds": 2.0,
+  "linear_stop_mps": 0.02,
+  "angular_stop_rps": 0.03,
+  "feedback_max_age": 0.5,
+  "authority_socket": "/home/unitree/A2_loco_manipulation/data/logs/unified/authority.sock",
+  "startup_timeout": 75,
+  "task_timeout": 180,
+  "gripper_width_m": 0.075,
+  "external_control_reviewed": false
+}

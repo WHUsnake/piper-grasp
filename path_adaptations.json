@@ -1,0 +1,23 @@
+[
+  {
+    "file": "A2_loco_manipulation/src/manipulation/grasp_generation/config/graspnet.json",
+    "reason": "Point model and worker paths at saved copies",
+    "original": {
+      "worker_python": "/home/xubo/桌面/she/search-grasp2/.venv-graspnet/bin/python",
+      "repository": "/home/xubo/桌面/she/search-grasp2/external/graspnet-baseline",
+      "checkpoint": "/home/xubo/桌面/she/search-grasp2/models/graspnet/checkpoint-rs.tar"
+    }
+  },
+  {
+    "file": "A2_loco_manipulation/scripts/graspnet/build_pipeline.sh",
+    "reason": "Use saved piper_msgs underlay"
+  },
+  {
+    "file": "A2_loco_manipulation/simulation/ros_pipeline/run.sh",
+    "reason": "Use saved piper_msgs underlay"
+  },
+  {
+    "file": "A2_loco_manipulation/simulation/ros_pipeline/run.sh",
+    "reason": "Isolate saved simulator on ROS_DOMAIN_ID=183; original uses182"
+  }
+]

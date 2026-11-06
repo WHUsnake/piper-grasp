@@ -1,0 +1,5 @@
+{
+  "invalid_parameters_rejected": true,
+  "concurrent_job_rejected": true,
+  "cancel_status": "cancelled"
+}

@@ -1,0 +1,15 @@
+{
+  "saved_at": "2026-11-06T18:23:52.880384+08:00",
+  "source": "/home/xubo/桌面/she/A2_loco_manipulation",
+  "snapshot": "/home/xubo/桌面/she/piper graspnet",
+  "purpose": "Frozen successful grasp implementation, simulation platform and local server",
+  "algorithm_changes": false,
+  "default_server_port": 8767,
+  "ros_domain_id": 183,
+  "saved_copy_validation": {
+    "success": true,
+    "min_hold_lift_m": 0.1003370826716884,
+    "bilateral_hold_fraction": 1.0,
+    "evidence": "验证记录/保存副本抓取验证"
+  }
+}

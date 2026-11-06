@@ -1,0 +1,25 @@
+{
+  "status": "PASS",
+  "previews": [
+    {
+      "bottle": -0.12,
+      "table": 0,
+      "number": "-12",
+      "dirty": true
+    },
+    {
+      "bottle": 0.12,
+      "table": 0,
+      "number": "12",
+      "dirty": true
+    },
+    {
+      "bottle": -0.000004,
+      "table": 0,
+      "number": "0",
+      "dirty": false
+    }
+  ],
+  "mobile_overflow": false,
+  "errors": []
+}

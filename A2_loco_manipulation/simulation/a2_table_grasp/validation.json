@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "hold_samples": 50,
+  "sampled_min_hold_lift_m": 0.11435633016975977,
+  "sampled_bilateral_fraction": 1.0,
+  "zero_start_verified": true,
+  "bottle_freejoint": true,
+  "no_weld": true,
+  "web_matches_physics": true
+}

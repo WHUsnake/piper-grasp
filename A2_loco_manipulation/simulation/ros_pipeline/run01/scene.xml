@@ -1,0 +1,379 @@
+<mujoco model="A2_PiPER_table_grasp">
+  <compiler angle="radian" meshdir="/home/xubo/桌面/she/A2_Piper_WBC/vendor/unitree_ros/robots/a2_description/meshes" />
+  <option gravity="0 0 -9.81" timestep=".002" integrator="implicitfast" cone="elliptic" />
+
+  <default>
+      <default class="hip_joint">
+        <joint damping="0.2" armature="0.03" frictionloss="1.0" />
+      </default>
+      <default class="thigh_joint">
+        <joint damping="0.2" armature="0.03" frictionloss="1.0" />
+      </default>
+      <default class="calf_joint">
+        <joint damping="1.0" armature="0.03" frictionloss="3.0" />
+      </default>
+      <default class="collision">
+        <geom group="3" priority="1" condim="6" />
+      </default>
+      <default class="foot">
+
+          <geom group="3" priority="1" condim="6" />
+      </default>
+  <default class="p_piper">
+      <joint frictionloss="0.3" armature="0.005" />
+      <position inheritrange="1" forcerange="-100 100" />
+      <default class="p_finger">
+        <joint frictionloss="0" type="slide" />
+        <position forcerange="-10 10" />
+      </default>
+      <default class="p_visual">
+        <geom group="2" type="mesh" contype="0" conaffinity="0" density="0" />
+      </default>
+      <default class="p_collision">
+        <geom group="3" type="capsule" />
+      </default>
+    </default>
+  </default>
+
+  <asset>
+    <mesh name="base_link" file="/home/xubo/桌面/she/A2_Piper_WBC/vendor/unitree_ros/robots/a2_description/meshes/base_link.STL" />
+    <mesh name="left_front_Link1" file="/home/xubo/桌面/she/A2_Piper_WBC/vendor/unitree_ros/robots/a2_description/meshes/left_front_Link1.STL" />
+    <mesh name="left_front_Link2" file="/home/xubo/桌面/she/A2_Piper_WBC/vendor/unitree_ros/robots/a2_description/meshes/left_front_Link2.STL" />
+    <mesh name="left_front_Link3" file="/home/xubo/桌面/she/A2_Piper_WBC/vendor/unitree_ros/robots/a2_description/meshes/left_front_Link3.STL" />
+    <mesh name="left_front_Link4" file="/home/xubo/桌面/she/A2_Piper_WBC/vendor/unitree_ros/robots/a2_description/meshes/left_front_Link4.STL" />
+    <mesh name="left_hind_Link1" file="/home/xubo/桌面/she/A2_Piper_WBC/vendor/unitree_ros/robots/a2_description/meshes/left_hind_Link1.STL" />
+    <mesh name="left_hind_Link2" file="/home/xubo/桌面/she/A2_Piper_WBC/vendor/unitree_ros/robots/a2_description/meshes/left_hind_Link2.STL" />
+    <mesh name="left_hind_Link3" file="/home/xubo/桌面/she/A2_Piper_WBC/vendor/unitree_ros/robots/a2_description/meshes/left_hind_Link3.STL" />
+    <mesh name="left_hind_Link4" file="/home/xubo/桌面/she/A2_Piper_WBC/vendor/unitree_ros/robots/a2_description/meshes/left_hind_Link4.STL" />
+    <mesh name="right_front_Link1" file="/home/xubo/桌面/she/A2_Piper_WBC/vendor/unitree_ros/robots/a2_description/meshes/right_front_Link1.STL" />
+    <mesh name="right_front_Link2" file="/home/xubo/桌面/she/A2_Piper_WBC/vendor/unitree_ros/robots/a2_description/meshes/right_front_Link2.STL" />
+    <mesh name="right_front_Link3" file="/home/xubo/桌面/she/A2_Piper_WBC/vendor/unitree_ros/robots/a2_description/meshes/right_front_Link3.STL" />
+    <mesh name="right_front_Link4" file="/home/xubo/桌面/she/A2_Piper_WBC/vendor/unitree_ros/robots/a2_description/meshes/right_front_Link4.STL" />
+    <mesh name="right_hind_Link1" file="/home/xubo/桌面/she/A2_Piper_WBC/vendor/unitree_ros/robots/a2_description/meshes/right_hind_Link1.STL" />
+    <mesh name="right_hind_Link2" file="/home/xubo/桌面/she/A2_Piper_WBC/vendor/unitree_ros/robots/a2_description/meshes/right_hind_Link2.STL" />
+    <mesh name="right_hind_Link3" file="/home/xubo/桌面/she/A2_Piper_WBC/vendor/unitree_ros/robots/a2_description/meshes/right_hind_Link3.STL" />
+    <mesh name="right_hind_Link4" file="/home/xubo/桌面/she/A2_Piper_WBC/vendor/unitree_ros/robots/a2_description/meshes/right_hind_Link4.STL" />
+  <material name="p_gray_mat" rgba="0.59 0.59 0.59 1" />
+    <material name="p_light_gray_mat" rgba="0.98 0.98 0.98 1" />
+    <material name="p_light_medium_gray_mat" rgba="0.85 0.85 0.85 1" />
+    <material name="p_dark_gray_mat" rgba="0.086 0.086 0.086 1" />
+    <material name="p_darker_gray_mat" rgba="0.14 0.14 0.14 1" />
+    <material name="p_white_mat" rgba="1 1 1 1" />
+    <material name="p_red_mat" rgba="0.82 0.15 0.15 1" />
+    <material name="p_black_mat" rgba="0 0 0 1" />
+    <material name="p_light_blue" rgba="0.79 0.82 0.93 1" />
+
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link2_0.obj" name="p_link2_0" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link2_1.obj" name="p_link2_1" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link2_2.obj" name="p_link2_2" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link2_3.obj" name="p_link2_3" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link2_4.obj" name="p_link2_4" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link2_5.obj" name="p_link2_5" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link2_6.obj" name="p_link2_6" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link2_7.obj" name="p_link2_7" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link2_8.obj" name="p_link2_8" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link2_9.obj" name="p_link2_9" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link2_10.obj" name="p_link2_10" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link2_11.obj" name="p_link2_11" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link2_12.obj" name="p_link2_12" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link2_13.obj" name="p_link2_13" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link2_14.obj" name="p_link2_14" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link2_15.obj" name="p_link2_15" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link2_16.obj" name="p_link2_16" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link2_17.obj" name="p_link2_17" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link2_18.obj" name="p_link2_18" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link2_19.obj" name="p_link2_19" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link2_20.obj" name="p_link2_20" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link2_21.obj" name="p_link2_21" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link2_22.obj" name="p_link2_22" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link2_23.obj" name="p_link2_23" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link2_24.obj" name="p_link2_24" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link2_25.obj" name="p_link2_25" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link2_26.obj" name="p_link2_26" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link2_27.obj" name="p_link2_27" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link2_28.obj" name="p_link2_28" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link2_29.obj" name="p_link2_29" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link2_30.obj" name="p_link2_30" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link2_31.obj" name="p_link2_31" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link3_0.obj" name="p_link3_0" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link3_1.obj" name="p_link3_1" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link3_2.obj" name="p_link3_2" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link3_3.obj" name="p_link3_3" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link3_4.obj" name="p_link3_4" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link3_5.obj" name="p_link3_5" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link3_7.obj" name="p_link3_7" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link3_8.obj" name="p_link3_8" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link3_9.obj" name="p_link3_9" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link3_10.obj" name="p_link3_10" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link3_11.obj" name="p_link3_11" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link3_12.obj" name="p_link3_12" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link3_13.obj" name="p_link3_13" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link3_14.obj" name="p_link3_14" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link3_15.obj" name="p_link3_15" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link3_16.obj" name="p_link3_16" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link3_17.obj" name="p_link3_17" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link3_18.obj" name="p_link3_18" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link3_19.obj" name="p_link3_19" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link3_20.obj" name="p_link3_20" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link3_21.obj" name="p_link3_21" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link3_22.obj" name="p_link3_22" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link3_23.obj" name="p_link3_23" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link3_24.obj" name="p_link3_24" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link3_25.obj" name="p_link3_25" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link3_26.obj" name="p_link3_26" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link3_27.obj" name="p_link3_27" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link3_28.obj" name="p_link3_28" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link4_2.obj" name="p_link4_2" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link4_3.obj" name="p_link4_3" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link4_4.obj" name="p_link4_4" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link4_5.obj" name="p_link4_5" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link4_6.obj" name="p_link4_6" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link5_2.obj" name="p_link5_2" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link5_3.obj" name="p_link5_3" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link5_4.obj" name="p_link5_4" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link5_5.obj" name="p_link5_5" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link5_6.obj" name="p_link5_6" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link5_7.obj" name="p_link5_7" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link5_8.obj" name="p_link5_8" />
+    <mesh name="p_base_link" file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/base_link.stl" />
+    <mesh name="p_link1" file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link1.stl" />
+    <mesh name="p_link2" file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link2.stl" />
+    <mesh name="p_link2_gray" file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link2_gray.stl" />
+    <mesh name="p_link3" file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link3.stl" />
+    <mesh name="p_link4" file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link4.stl" />
+    <mesh name="p_link5" file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link5.stl" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link6.stl" name="p_link6" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link7.stl" name="p_link7" />
+    <mesh file="/home/xubo/桌面/she/PiPER抓取完整项目/PiPER抓取项目/vendor/agilex_piper/assets/link8.stl" name="p_link8" />
+  </asset>
+
+  <worldbody>
+    <body name="base_link" pos="0 0 0.41518869014094106">
+      <inertial pos="0.00698259 -0.000712858 0.0128895" quat="-0.00152907 0.699583 -0.00252986 0.714546" mass="19.651" diaginertia="0.472398 0.407723 0.141627" />
+      <site name="imu" pos="-0.0 0 0.0" />
+      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.792157 0.819608 0.933333 1" mesh="base_link" />
+      <geom class="collision" size="0.12 0.14 0.085" pos="0 0 0.007" type="box" rgba="0.792157 0.819608 0.933333 1" />
+      <geom class="collision" size="0.04 0.025 0.01" pos="0.25 0 0.119" type="box" rgba="0.792157 0.819608 0.933333 1" />
+      <geom class="collision" size="0.025 0.015 0.008" pos="-0.22 0 0.119" quat="0.999888 0 -0.0149994 0" type="box" rgba="0.792157 0.819608 0.933333 1" />
+      <geom class="collision" size="0.03 0.05 0.005" pos="0.365 0 0.1" quat="0.939373 0 -0.342898 0" type="box" rgba="0.792157 0.819608 0.933333 1" />
+      <geom class="collision" size="0.0225 0.05 0.005" pos="-0.31 0 0.112" quat="0.939373 0 0.342898 0" type="box" rgba="0.792157 0.819608 0.933333 1" />
+      <body name="FL_hip" pos="0.25944 0.075113 0" quat="1.0 0.0 0.0 0.0">
+        <inertial pos="-0.002408 -0.01622 0.000239" quat="0.66751 0.421649 0.565191 0.239168" mass="1.62" diaginertia="0.0016644 0.00161602 0.00145995" />
+        <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.898039 0.917647 0.929412 1" mesh="left_front_Link1" />
+        <body name="FL_thigh" pos="0 0.12779 0" quat="0.9210609940028851 0.0 0.3894183423086505 0.0">
+          <inertial pos="-0.003268 -0.03111 -0.053896" quat="0.993045 0.11348 0.0231928 0.0211279" mass="3.079" diaginertia="0.0293395 0.0280448 0.00383794" />
+          <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.898039 0.917647 0.929412 1" mesh="left_front_Link2" />
+          <geom class="collision" size="0.048 0.06" pos="0 -0.04 0" quat="0.707035 0.707179 0 0" type="cylinder" rgba="0.898039 0.917647 0.929412 1" />
+          <geom class="collision" size="0.0275 0.018 0.085" pos="-0.025 0 -0.09" quat="0.999988 0 0.00499998 0" type="box" rgba="0.898039 0.917647 0.929412 1" />
+          <geom class="collision" size="0.0085 0.025 0.025" pos="-0.022 0 -0.27" quat="0.930508 0 -0.366273 0" type="box" rgba="0.898039 0.917647 0.929412 1" />
+          <body name="FL_calf" pos="0 0 -0.275" quat="0.6967067093471654 0.0 -0.7173560908995228 0.0">
+            <inertial pos="0.0102138 -1.99312e-05 -0.136496" quat="0.706884 -0.0119077 -0.0120568 0.707127" mass="0.407" diaginertia="0.00511119 0.00502314 0.000177746" />
+            <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.898039 0.917647 0.929412 1" mesh="left_front_Link3" />
+            <geom class="collision" size="0.012 0.015 0.05" pos="0.018 0 -0.08" quat="0.992809 0 -0.119712 0" type="box" rgba="0.898039 0.917647 0.929412 1" />
+            <geom class="collision" size="0.011 0.015 0.04" pos="0.033 0 -0.17" quat="0.999888 0 -0.0149994 0" type="box" rgba="0.898039 0.917647 0.929412 1" />
+            <geom class="collision" size="0.01 0.018 0.03" pos="0.029 0 -0.236" quat="0.995004 0 0.0998334 0" type="box" rgba="0.898039 0.917647 0.929412 1" />
+            <geom class="collision" size="0.005 0.018 0.03" pos="0.008 0 -0.23" quat="0.942755 0 0.333487 0" type="box" rgba="0.898039 0.917647 0.929412 1" />
+            <geom pos="0 0 -0.275" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.698039 0.698039 0.698039 1" mesh="left_front_Link4" />
+            <geom size="0.032" pos="0 0 -0.275" rgba="0.698039 0.698039 0.698039 1" class="foot" />
+          </body>
+        </body>
+      </body>
+      <body name="RL_hip" pos="-0.25944 0.075113 0" quat="1.0 0.0 0.0 0.0">
+        <inertial pos="0.00327 -0.01622 -9.7e-05" quat="0.358494 0.383537 0.580824 0.622113" mass="1.62" diaginertia="0.00167848 0.00163116 0.00141504" />
+        <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.898039 0.917647 0.929412 1" mesh="left_hind_Link1" />
+        <body name="RL_thigh" pos="0 0.12779 0" quat="0.9210609940028851 0.0 0.3894183423086505 0.0">
+          <inertial pos="-0.003268 -0.03111 -0.053896" quat="0.993045 0.11348 0.0231928 0.0211279" mass="3.079" diaginertia="0.0293395 0.0280448 0.00383794" />
+          <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.898039 0.917647 0.929412 1" mesh="left_hind_Link2" />
+          <geom class="collision" size="0.048 0.06" pos="0 -0.04 0" quat="0.707035 0.707179 0 0" type="cylinder" rgba="0.898039 0.917647 0.929412 1" />
+          <geom class="collision" size="0.0275 0.018 0.085" pos="-0.025 0 -0.09" quat="0.999988 0 0.00499998 0" type="box" rgba="0.898039 0.917647 0.929412 1" />
+          <geom class="collision" size="0.0085 0.025 0.025" pos="-0.022 0 -0.27" quat="0.930508 0 -0.366273 0" type="box" rgba="0.898039 0.917647 0.929412 1" />
+          <body name="RL_calf" pos="0 0 -0.275" quat="0.6967067093471654 0.0 -0.7173560908995228 0.0">
+            <inertial pos="0.0102138 -1.99312e-05 -0.136496" quat="0.706884 -0.0119077 -0.0120568 0.707127" mass="0.407" diaginertia="0.00511119 0.00502314 0.000177746" />
+            <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.898039 0.917647 0.929412 1" mesh="left_hind_Link3" />
+            <geom class="collision" size="0.012 0.015 0.05" pos="0.018 0 -0.08" quat="0.992809 0 -0.119712 0" type="box" rgba="0.898039 0.917647 0.929412 1" />
+            <geom class="collision" size="0.011 0.015 0.04" pos="0.033 0 -0.17" quat="0.999888 0 -0.0149994 0" type="box" rgba="0.898039 0.917647 0.929412 1" />
+            <geom class="collision" size="0.01 0.018 0.03" pos="0.029 0 -0.236" quat="0.995004 0 0.0998334 0" type="box" rgba="0.898039 0.917647 0.929412 1" />
+            <geom class="collision" size="0.005 0.018 0.03" pos="0.008 0 -0.23" quat="0.942755 0 0.333487 0" type="box" rgba="0.898039 0.917647 0.929412 1" />
+            <geom pos="0 0 -0.275" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.698039 0.698039 0.698039 1" mesh="left_hind_Link4" />
+            <geom size="0.032" pos="0 0 -0.275" rgba="0.698039 0.698039 0.698039 1" class="foot" />
+          </body>
+        </body>
+      </body>
+      <body name="FR_hip" pos="0.25944 -0.075113 0" quat="1.0 0.0 0.0 0.0">
+        <inertial pos="-0.002465 0.01622 0.000318" quat="0.244263 0.553086 0.449878 0.657299" mass="1.62" diaginertia="0.0016672 0.00160755 0.00146457" />
+        <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.898039 0.917647 0.929412 1" mesh="right_front_Link1" />
+        <body name="FR_thigh" pos="0 -0.12779 0" quat="0.9210609940028851 0.0 0.3894183423086505 0.0">
+          <inertial pos="-0.003256 0.031125 -0.053921" quat="0.993054 -0.113587 0.0234158 -0.0198545" mass="3.077" diaginertia="0.029323 0.028038 0.00383842" />
+          <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.898039 0.917647 0.929412 1" mesh="right_front_Link2" />
+          <geom class="collision" size="0.048 0.06" pos="0 0.04 0" quat="0.707035 0.707179 0 0" type="cylinder" rgba="0.898039 0.917647 0.929412 1" />
+          <geom class="collision" size="0.0275 0.018 0.085" pos="-0.025 0 -0.09" quat="0.999988 0 0.00499998 0" type="box" rgba="0.898039 0.917647 0.929412 1" />
+          <geom class="collision" size="0.0085 0.025 0.025" pos="-0.022 0 -0.27" quat="0.930508 0 -0.366273 0" type="box" rgba="0.898039 0.917647 0.929412 1" />
+          <body name="FR_calf" pos="0 0 -0.275" quat="0.6967067093471654 0.0 -0.7173560908995228 0.0">
+            <inertial pos="0.0102138 1.55479e-05 -0.136496" quat="0.707151 -0.0120743 -0.0118903 0.706859" mass="0.407" diaginertia="0.00511119 0.00502314 0.000177746" />
+            <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.898039 0.917647 0.929412 1" mesh="right_front_Link3" />
+            <geom class="collision" size="0.012 0.015 0.05" pos="0.018 0 -0.08" quat="0.992809 0 -0.119712 0" type="box" rgba="0.898039 0.917647 0.929412 1" />
+            <geom class="collision" size="0.011 0.015 0.04" pos="0.033 0 -0.17" quat="0.999888 0 -0.0149994 0" type="box" rgba="0.898039 0.917647 0.929412 1" />
+            <geom class="collision" size="0.01 0.018 0.03" pos="0.029 0 -0.236" quat="0.995004 0 0.0998334 0" type="box" rgba="0.898039 0.917647 0.929412 1" />
+            <geom class="collision" size="0.005 0.018 0.03" pos="0.008 0 -0.23" quat="0.942755 0 0.333487 0" type="box" rgba="0.898039 0.917647 0.929412 1" />
+            <geom pos="0 0 -0.275" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.698039 0.698039 0.698039 1" mesh="right_front_Link4" />
+            <geom size="0.032" pos="0 0 -0.275" rgba="0.698039 0.698039 0.698039 1" class="foot" />
+          </body>
+        </body>
+      </body>
+      <body name="RR_hip" pos="-0.25944 -0.075113 0" quat="1.0 0.0 0.0 0.0">
+        <inertial pos="0.00327 0.01622 -3.7e-05" quat="0.616206 0.585144 0.36648 0.378931" mass="1.62" diaginertia="0.00167769 0.00163476 0.00141225" />
+        <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.898039 0.917647 0.929412 1" mesh="right_hind_Link1" />
+        <body name="RR_thigh" pos="0 -0.12779 0" quat="0.9210609940028851 0.0 0.3894183423086505 0.0">
+          <inertial pos="-0.003256 0.031125 -0.053921" quat="0.993054 -0.113587 0.0234158 -0.0198545" mass="3.077" diaginertia="0.029323 0.028038 0.00383842" />
+          <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.898039 0.917647 0.929412 1" mesh="right_hind_Link2" />
+          <geom class="collision" size="0.048 0.06" pos="0 0.04 0" quat="0.707035 0.707179 0 0" type="cylinder" rgba="0.898039 0.917647 0.929412 1" />
+          <geom class="collision" size="0.0275 0.018 0.085" pos="-0.025 0 -0.09" quat="0.999988 0 0.00499998 0" type="box" rgba="0.898039 0.917647 0.929412 1" />
+          <geom class="collision" size="0.0085 0.025 0.025" pos="-0.022 0 -0.27" quat="0.930508 0 -0.366273 0" type="box" rgba="0.898039 0.917647 0.929412 1" />
+          <body name="RR_calf" pos="0 0 -0.275" quat="0.6967067093471654 0.0 -0.7173560908995228 0.0">
+            <inertial pos="0.0102138 1.55479e-05 -0.136496" quat="0.707151 -0.0120743 -0.0118903 0.706859" mass="0.407" diaginertia="0.00511119 0.00502314 0.000177746" />
+            <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.898039 0.917647 0.929412 1" mesh="right_hind_Link3" />
+            <geom class="collision" size="0.012 0.015 0.05" pos="0.018 0 -0.08" quat="0.992809 0 -0.119712 0" type="box" rgba="0.898039 0.917647 0.929412 1" />
+            <geom class="collision" size="0.011 0.015 0.04" pos="0.033 0 -0.17" quat="0.999888 0 -0.0149994 0" type="box" rgba="0.898039 0.917647 0.929412 1" />
+            <geom class="collision" size="0.01 0.018 0.03" pos="0.029 0 -0.236" quat="0.995004 0 0.0998334 0" type="box" rgba="0.898039 0.917647 0.929412 1" />
+            <geom class="collision" size="0.005 0.018 0.03" pos="0.008 0 -0.23" quat="0.942755 0 0.333487 0" type="box" rgba="0.898039 0.917647 0.929412 1" />
+            <geom pos="0 0 -0.275" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.698039 0.698039 0.698039 1" mesh="right_hind_Link4" />
+            <geom size="0.032" pos="0 0 -0.275" rgba="0.698039 0.698039 0.698039 1" class="foot" />
+          </body>
+        </body>
+      </body>
+    <body name="p_base_link" childclass="p_piper" gravcomp="1" pos=".0899 0 .1416">
+      <inertial pos="-0.00979275 1.82906e-06 0.04101" quat="0.692988 -0.137524 -0.137826 0.69416" mass="0.162549" diaginertia="0.000269445 0.000227478 0.000221437" />
+      <geom class="p_visual" density="0" mesh="p_base_link" material="p_gray_mat" />
+      <geom class="p_collision" mesh="p_base_link" />
+      <body name="p_link1" pos="0 0 0.123" quat="0.707105 0 0 -0.707108" gravcomp="1">
+        <inertial pos="0.00131676 0.000310289 -0.00922875" quat="0.557105 0.432155 0.377373 0.600388" mass="0.097868" diaginertia="9.25942e-05 8.3083e-05 7.69469e-05" />
+        <joint name="p_joint1" axis="0 0 1" range="-2.618 2.618" />
+        <geom class="p_visual" density="0" mesh="p_link1" material="p_gray_mat" />
+        <geom class="p_collision" mesh="p_link1" />
+        <body name="p_link2" quat="0.499998 0.5 -0.500002 -0.5" gravcomp="1">
+          <inertial pos="0.148794 -0.00242027 0.00175155" quat="-0.0249063 0.70684 0.00803509 0.706889" mass="0.290889" diaginertia="0.00177549 0.00173142 0.00014552" />
+          <joint name="p_joint2" axis="0 0 1" range="0 3.14" />
+          <geom mesh="p_link2_0" material="p_gray_mat" class="p_visual" />
+          <geom mesh="p_link2_1" material="p_darker_gray_mat" class="p_visual" />
+          <geom mesh="p_link2_2" material="p_darker_gray_mat" class="p_visual" />
+          <geom mesh="p_link2_3" material="p_dark_gray_mat" class="p_visual" />
+          <geom mesh="p_link2_4" material="p_dark_gray_mat" class="p_visual" />
+          <geom mesh="p_link2_5" material="p_red_mat" class="p_visual" />
+          <geom mesh="p_link2_6" material="p_dark_gray_mat" class="p_visual" />
+          <geom mesh="p_link2_7" material="p_gray_mat" class="p_visual" />
+          <geom mesh="p_link2_8" material="p_red_mat" class="p_visual" />
+          <geom mesh="p_link2_9" material="p_red_mat" class="p_visual" />
+          <geom mesh="p_link2_10" material="p_gray_mat" class="p_visual" />
+          <geom mesh="p_link2_11" material="p_red_mat" class="p_visual" />
+          <geom mesh="p_link2_12" material="p_red_mat" class="p_visual" />
+          <geom mesh="p_link2_13" material="p_red_mat" class="p_visual" />
+          <geom mesh="p_link2_14" material="p_red_mat" class="p_visual" />
+          <geom mesh="p_link2_15" material="p_red_mat" class="p_visual" />
+          <geom mesh="p_link2_16" material="p_red_mat" class="p_visual" />
+          <geom mesh="p_link2_17" material="p_red_mat" class="p_visual" />
+          <geom mesh="p_link2_18" material="p_red_mat" class="p_visual" />
+          <geom mesh="p_link2_19" material="p_red_mat" class="p_visual" />
+          <geom mesh="p_link2_20" material="p_red_mat" class="p_visual" />
+          <geom mesh="p_link2_21" material="p_gray_mat" class="p_visual" />
+          <geom mesh="p_link2_22" material="p_red_mat" class="p_visual" />
+          <geom mesh="p_link2_23" material="p_red_mat" class="p_visual" />
+          <geom mesh="p_link2_24" material="p_red_mat" class="p_visual" />
+          <geom mesh="p_link2_25" material="p_dark_gray_mat" class="p_visual" />
+          <geom mesh="p_link2_26" material="p_red_mat" class="p_visual" />
+          <geom mesh="p_link2_27" material="p_darker_gray_mat" class="p_visual" />
+          <geom mesh="p_link2_28" material="p_darker_gray_mat" class="p_visual" />
+          <geom mesh="p_link2_29" material="p_darker_gray_mat" class="p_visual" />
+          <geom mesh="p_link2_30" material="p_darker_gray_mat" class="p_visual" />
+          <geom mesh="p_link2_31" material="p_light_medium_gray_mat" class="p_visual" />
+          <geom mesh="p_link2" class="p_collision" />
+          <body name="p_link3" pos="0.28358 0.028726 0" quat="0.998726 0 0 0.0504536" gravcomp="1">
+            <inertial pos="-0.0996835 0.0349477 0.000508026" quat="0.0777021 0.702287 -0.0990541 0.700674" mass="0.290848" diaginertia="0.000241946 0.000222224 0.000100384" />
+            <joint name="p_joint3" pos="0 0 0" axis="0 0 1" range="-2.697 0" />
+            <geom mesh="p_link3_0" material="p_darker_gray_mat" class="p_visual" />
+            <geom mesh="p_link3_1" material="p_red_mat" class="p_visual" />
+            <geom mesh="p_link3_2" material="p_gray_mat" class="p_visual" />
+            <geom mesh="p_link3_3" material="p_gray_mat" class="p_visual" />
+            <geom mesh="p_link3_4" material="p_gray_mat" class="p_visual" />
+            <geom mesh="p_link3_5" material="p_gray_mat" class="p_visual" />
+            <geom mesh="p_link3_7" material="p_darker_gray_mat" class="p_visual" />
+            <geom mesh="p_link3_8" material="p_white_mat" class="p_visual" />
+            <geom mesh="p_link3_9" material="p_red_mat" class="p_visual" />
+            <geom mesh="p_link3_10" material="p_white_mat" class="p_visual" />
+            <geom mesh="p_link3_11" material="p_white_mat" class="p_visual" />
+            <geom mesh="p_link3_12" material="p_white_mat" class="p_visual" />
+            <geom mesh="p_link3_13" material="p_white_mat" class="p_visual" />
+            <geom mesh="p_link3_14" material="p_gray_mat" class="p_visual" />
+            <geom mesh="p_link3_15" material="p_gray_mat" class="p_visual" />
+            <geom mesh="p_link3_16" material="p_gray_mat" class="p_visual" />
+            <geom mesh="p_link3_17" material="p_gray_mat" class="p_visual" />
+            <geom mesh="p_link3_18" material="p_gray_mat" class="p_visual" />
+            <geom mesh="p_link3_19" material="p_gray_mat" class="p_visual" />
+            <geom mesh="p_link3_20" material="p_gray_mat" class="p_visual" />
+            <geom mesh="p_link3_21" material="p_gray_mat" class="p_visual" />
+            <geom mesh="p_link3_22" material="p_gray_mat" class="p_visual" />
+            <geom mesh="p_link3_23" material="p_gray_mat" class="p_visual" />
+            <geom mesh="p_link3_24" material="p_gray_mat" class="p_visual" />
+            <geom mesh="p_link3_25" material="p_gray_mat" class="p_visual" />
+            <geom mesh="p_link3_26" material="p_gray_mat" class="p_visual" />
+            <geom mesh="p_link3_27" material="p_gray_mat" class="p_visual" />
+            <geom mesh="p_link3_28" material="p_gray_mat" class="p_visual" />
+            <geom mesh="p_link3" class="p_collision" />
+            <body name="p_link4" pos="-0.24221 0.068514 0" quat="0.544767 -0.544769 -0.450809 0.450808" gravcomp="1">
+              <inertial pos="0.000276465 -0.00102804 -0.00472831" quat="0.492305 0.505285 0.503294 0.499017" mass="0.127087" diaginertia="4.87057e-05 4.10595e-05 3.82001e-05" />
+              <joint name="p_joint4" axis="0 0 1" range="-1.832 1.832" />
+              <geom mesh="p_link4_2" material="p_gray_mat" class="p_visual" />
+              <geom mesh="p_link4_3" material="p_darker_gray_mat" class="p_visual" />
+              <geom mesh="p_link4_4" material="p_gray_mat" class="p_visual" />
+              <geom mesh="p_link4_5" material="p_gray_mat" class="p_visual" />
+              <geom mesh="p_link4_6" material="p_gray_mat" class="p_visual" />
+              <geom mesh="p_link4" class="p_collision" />
+              <body name="p_link5" quat="0.707105 0.707108 0 0" gravcomp="1">
+                <inertial pos="8.82262e-05 0.0566829 -0.0019612" quat="0.507447 0.490986 0.506887 0.494466" mass="0.144711" diaginertia="0.001 0.001 0.001" />
+                <joint name="p_joint5" axis="0 0 1" range="-1.22 1.22" />
+                <geom mesh="p_link5_2" material="p_black_mat" class="p_visual" />
+                <geom mesh="p_link5_3" material="p_black_mat" class="p_visual" />
+                <geom mesh="p_link5_4" material="p_darker_gray_mat" class="p_visual" />
+                <geom mesh="p_link5_5" material="p_gray_mat" class="p_visual" />
+                <geom mesh="p_link5_6" material="p_light_gray_mat" class="p_visual" />
+                <geom mesh="p_link5_7" material="p_gray_mat" class="p_visual" />
+                <geom mesh="p_link5_8" material="p_gray_mat" class="p_visual" />
+                <geom mesh="p_link5" class="p_collision" />
+                <body name="p_link6" pos="0 0.091 0.0014165" quat="0 0 -0.707105 -0.707108" gravcomp="1">
+                  <inertial pos="0.0010312 0.0121761 0.0315481" quat="0.0230402 0.707091 0.0373344 0.70576" mass="1.2" diaginertia="0.001 0.001 0.001" />
+                  <joint name="p_joint6" axis="0 0 1" range="-3.14 3.14" />
+                  <geom quat="0.707105 0 0 0.707108" mesh="p_link6" material="p_gray_mat" class="p_visual" />
+                  <geom quat="0.707105 0 0 0.707108" mesh="p_link6" class="p_collision" />
+                  <body name="p_link7" pos="0 0 0.13503" quat="1.89468e-08 1.89469e-08 0.707108 0.707105" gravcomp="1">
+                    <inertial pos="-0.000277778 -0.0467673 -0.00921029" quat="0.46134 0.536174 -0.553273 0.439968" mass="0.0264823" diaginertia="0.001 0.001 0.001" />
+                    <joint name="p_joint7" axis="0 0 -1" class="p_finger" range="0 0.035" />
+                    <geom mesh="p_link7" material="p_gray_mat" class="p_visual" />
+                    <geom type="box" size=".012 .015 .0025" pos="0 -0.015 -0.0025" rgba="1 0 0 .2" class="p_collision" friction="1.2 .01 .001" condim="4" />
+                    <geom type="box" size=".015 .015 .0025" pos="0 -0.045 -0.0025" rgba="0 0 1 .2" class="p_collision" friction="1.2 .01 .001" condim="4" />
+                  </body>
+                  <body name="p_link8" pos="0 0 0.13503" quat="1.89468e-08 -1.89469e-08 -0.707108 0.707105" gravcomp="1">
+                    <inertial pos="0.000277817 0.0467674 -0.0092103" quat="0.553273 0.439968 -0.46134 0.536174" mass="0.0264822" diaginertia="0.001 0.001 0.001" />
+                    <joint name="p_joint8" axis="0 0 1" class="p_finger" range="-0.035 0" />
+                    <geom mesh="p_link8" material="p_gray_mat" class="p_visual" />
+                    <geom type="box" size=".012 .015 .0025" pos="0 0.015 -0.0025" rgba="1 0 0 .2" class="p_collision" friction="1.2 .01 .001" condim="4" />
+                    <geom type="box" size=".015 .015 .0025" pos="0 0.045 -0.0025" rgba="0 0 1 .2" class="p_collision" friction="1.2 .01 .001" condim="4" />
+                  </body>
+                <site name="tcp" pos="0 0 0.095" size=".006" rgba="0 .95 .75 1" /></body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+  </body>
+  <light pos="0 -2 3" dir="0 .3 -1" diffuse=".9 .9 .9" castshadow="true" /><light pos="2 1 2" diffuse=".45 .5 .6" /><geom name="floor" type="plane" size="4 4 .05" rgba=".12 .16 .21 1" friction="1 .01 .001" /><geom name="table_top" type="box" pos="0.9199999999999999 0 0.735" size=".28 .40 .025" rgba=".60 .43 .27 1" friction="1 .01 .001" /><geom name="table_leg_0_0" type="box" pos="0.71 -0.32 0.355" size="0.022 0.022 0.355" rgba=".18 .23 .28 1" /><geom name="table_leg_0_1" type="box" pos="0.71 0.32 0.355" size="0.022 0.022 0.355" rgba=".18 .23 .28 1" /><geom name="table_leg_1_0" type="box" pos="1.13 -0.32 0.355" size="0.022 0.022 0.355" rgba=".18 .23 .28 1" /><geom name="table_leg_1_1" type="box" pos="1.13 0.32 0.355" size="0.022 0.022 0.355" rgba=".18 .23 .28 1" /><body name="bottle" pos="0.72 0 0.865"><freejoint name="bottle_free" /><geom name="bottle_body" type="cylinder" size=".026 .09" pos="0 0 -.015" mass=".18" rgba=".12 .63 .73 1" friction="1 .01 .001" condim="4" /><geom name="bottle_shoulder" type="ellipsoid" size=".026 .026 .022" pos="0 0 .073" mass=".01" rgba=".15 .68 .77 1" /><geom name="bottle_neck" type="cylinder" size=".014 .017" pos="0 0 .095" mass=".005" rgba=".18 .72 .80 1" /><geom name="bottle_cap" type="cylinder" size=".016 .008" pos="0 0 .117" mass=".005" rgba=".96 .77 .23 1" /><geom name="bottle_label" type="cylinder" size=".0262 .03" pos="0 0 -.005" contype="0" conaffinity="0" mass="0" rgba=".83 .94 .94 1" /></body><camera name="depth_camera" pos="0.35 -0.04 0.87" xyaxes="0.10748184298009182 -0.9942070475658493 0.0 0.026705162330814523 0.0028870445763042726 0.9996391845453535" fovy="48" /></worldbody>
+
+  <contact><exclude body1="p_base_link" body2="p_link1" />
+  </contact><equality><joint joint1="p_joint8" joint2="p_joint7" polycoef="0 -1 0 0 0" />
+  </equality><actuator><position name="p_joint1" joint="p_joint1" class="p_piper" kp="300" kv="25" />
+    <position name="p_joint2" joint="p_joint2" class="p_piper" kp="450" kv="25" />
+    <position name="p_joint3" joint="p_joint3" class="p_piper" kp="400" kv="25" />
+    <position name="p_joint4" joint="p_joint4" class="p_piper" kp="180" kv="25" />
+    <position name="p_joint5" joint="p_joint5" class="p_piper" kp="180" kv="25" />
+    <position name="p_joint6" joint="p_joint6" class="p_piper" kp="100" kv="25" />
+    <position name="p_gripper" joint="p_joint7" class="p_finger" kp="350" kv="8" forcerange="-15 15" />
+  </actuator><visual><global offwidth="1280" offheight="720" /><quality shadowsize="2048" /><headlight ambient=".35 .35 .35" diffuse=".65 .65 .65" specular=".15 .15 .15" /><rgba haze=".12 .16 .21 1" /></visual></mujoco>

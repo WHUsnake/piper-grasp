@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "unreachable": {
+    "status": "no_reachable_candidate",
+    "success": false,
+    "selected": null
+  },
+  "recovered": {
+    "success": true,
+    "tcp_m": 0.095,
+    "min_hold_lift_m": 0.10296025853711488
+  },
+  "mobile_overflow": false,
+  "browser_errors": []
+}

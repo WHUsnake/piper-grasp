@@ -1,0 +1,36 @@
+# 停止距离沿彩色相机光学 Z 轴测量，单位为米。
+# 2026-10-27 人工选定抓取接近位置：观测中位数 0.539 m。
+# 实际停车触发条件 Z <= stop_distance + distance_tolerance = 0.54 m。
+stop_distance: 0.52
+distance_tolerance: 0.02
+yaw_tolerance: 0.10
+
+# 时效与计时，单位为秒；进入停止范围后立即发零速度并报告到达。
+max_observation_age: 0.5
+navigation_timeout: 90.0
+lost_target_delay: 3.0
+
+# 负角速度表示顺时针搜索，线速度为米/秒，角速度为弧度/秒。
+search_angular_speed: -0.5
+max_linear_speed: 0.5
+min_linear_speed: 0.5
+# 一米内的速度上限优先于最低前进指令。
+slowdown_distance: 1.0
+near_linear_speed: 0.3
+max_angular_speed: 0.5
+
+# 比例控制增益，以及允许前进的最大目标偏角。
+linear_gain: 0.5
+angular_gain: 0.8
+forward_yaw_limit: 0.15
+
+# 已达到停止范围或更近时直接停车，不倒退调整。
+allow_reverse: false
+mode_switch_delay: 1.0
+# 当前 A2 驱动把 lingdong 映射为速度档位 1 和默认步态。
+motion_mode: lingdong
+
+# 多目标身份管理：正式 launch 强制开启，旧隔离测试保持关闭。
+target_status_topic: /target_manager/status
+target_begin_service: /target_manager/begin
+target_finish_service: /target_manager/finish

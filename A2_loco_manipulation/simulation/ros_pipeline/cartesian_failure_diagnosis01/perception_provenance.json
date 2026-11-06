@@ -1,0 +1,1 @@
+{"method": "YOLO11s-seg", "weights": "/home/xubo/\u684c\u9762/she/search-grasp2/models/yolo11s-seg.pt", "confidence": 0.7134217023849487, "oracle_segmentation": false, "point_count": 4173, "frame": "camera_color_optical_frame", "stamp": {"sec": 1793956244, "nanosec": 242549318}}

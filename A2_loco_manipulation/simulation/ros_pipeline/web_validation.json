@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "displayed_pregrasp": "60 mm",
+  "initial_playback_time": 15.02,
+  "pipeline": "ROS2_YOLO_GraspNet_MoveIt_TaskExecutor",
+  "oracle_segmentation": false,
+  "success": true,
+  "lift": 0.1001929294420798,
+  "contact": 1,
+  "mobile_overflow": false,
+  "browser_errors": []
+}
