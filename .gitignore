@@ -3,9 +3,11 @@ __pycache__/
 .venv*/
 **/workspaces/
 **/runs/
+**/output*/
 **/local_server*
 **/current_run*
 **/session.lock*
+**/site-deploy.tar.gz
 *.log
 .env
 .env.*

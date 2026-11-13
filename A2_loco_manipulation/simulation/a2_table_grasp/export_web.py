@@ -1,5 +1,5 @@
 """Export MuJoCo mesh geometry and actual body transforms for browser playback."""
-import argparse,json,shutil,sys
+import argparse,json,shutil,subprocess,sys
 from pathlib import Path
 import numpy as np
 import mujoco
@@ -32,7 +32,8 @@ for frame in frames:
     d.qpos[:]=frame.pop('qpos');mujoco.mj_forward(m,d)
     frame['positions']=d.xpos.round(6).tolist();frame['quaternions']=d.xquat[:,[1,2,3,0]].round(6).tolist()
 (assets/'motion.json').write_text(json.dumps(frames,separators=(',',':')))
-for name in ['overview.mp4','closeup.mp4','initial.png','result.png','camera_rgb.png','mask.png','metrics.json','trace.json','pointcloud.json','proposals.json']:
+for name in ['overview.mp4','closeup.mp4','initial.png','result.png','camera_rgb.png','mask.png','metrics.json','trace.json','pointcloud.json','proposals.json','timeline.json','detected_objects.json']:
     if (out/name).is_file():shutil.copyfile(out/name,assets/name)
+subprocess.run([sys.executable,str(ROOT/'render_dc1_preview.py'),str(out),'--output',str(assets/'dc1_initial.png'),'--video',str(assets/'dc1_view.mp4')],check=True,stdout=subprocess.DEVNULL)
 if not (assets/'result.png').is_file():shutil.copyfile(out/'initial.png',assets/'result.png')
 print(json.dumps(dict(geoms=len(geoms),meshes=len(meshes),geometry_bytes=offset,frames=len(frames),duration=frames[-1]['t'])))

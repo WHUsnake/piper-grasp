@@ -15,6 +15,7 @@ import rclpy
 class SimulationExecution:
     def initialize_simulation(self):
         self.declare_parameter('simulation_mode',False);self.declare_parameter('session_id','')
+        self.declare_parameter('place_after_grasp',False)
         self.declare_parameter('require_selected_grasp',True)
         self.declare_parameter('tool_translation',[0.,0.,.105])
         self.declare_parameter('tool_quaternion',[0.,0.,0.,1.])
@@ -24,6 +25,8 @@ class SimulationExecution:
         self.sim_action=ActionClient(self,FollowJointTrajectory,'/sim/arm_controller/follow_joint_trajectory')
         self.sim_gripper=self.create_publisher(Float64,'/sim/gripper/command',1)
         self.sim_ready=self.create_client(Trigger,'/sim/ready')
+        self.sim_near_support=self.create_client(Trigger,'/sim/target_near_support')
+        self.sim_placed=self.create_client(Trigger,'/sim/target_placed')
         self.create_subscription(String,'/grasp/diagnostics',self.receive_geometry,10)
         self.create_subscription(GraspCandidateArray,'/grasp/candidates',lambda m:setattr(self,'live_candidates',m),2)
         self.create_service(Trigger,'/sim/task/start',self.start_simulation)
@@ -40,8 +43,10 @@ class SimulationExecution:
         stamp=data['acquisition_stamp'];age=self.get_clock().now().nanoseconds/1e9-(stamp[0]+stamp[1]/1e9)
         if not 0<=age<=.5:raise ValueError('Target geometry observation expired')
         f=data['geometry_fit'];p=chosen.observed_object_center
-        centre=[*f['axis_xy'],(f['bottom_observed_z_m']+f['top_observed_z_m'])/2]
-        if np.linalg.norm(np.array(centre)-[p.x,p.y,p.z])>.005 or abs(f['radius_m']-chosen.observed_object_radius_m)>.002 or abs(f['observed_height_m']-chosen.observed_object_height_m)>.015:
+        shape=f.get('shape','cylinder');sphere=shape=='sphere'
+        centre=f['center'] if shape in ('sphere','box') else [*f['axis_xy'],(f['bottom_observed_z_m']+f['top_observed_z_m'])/2]
+        height=2*f['radius_m'] if sphere else f['observed_height_m']
+        if np.linalg.norm(np.array(centre)-[p.x,p.y,p.z])>.005 or abs(f['radius_m']-chosen.observed_object_radius_m)>.002 or abs(height-chosen.observed_object_height_m)>.015:
             raise ValueError('Observed object moved or changed shape since planning')
 
     def receive_selection(self,msg):
@@ -104,6 +109,36 @@ class SimulationExecution:
             handle.cancel_goal_async();raise
         if result.result.error_code!=0:raise RuntimeError(result.result.error_string or 'Trajectory tracking failed')
 
+    def reverse_simulation_path(self,trajectory):
+        """Return along a previously validated Cartesian/joint trajectory."""
+        result=copy.deepcopy(trajectory)
+        times=[p.time_from_start.sec+p.time_from_start.nanosec/1e9 for p in trajectory.points]
+        result.points=list(reversed(result.points))
+        for point,seconds in zip(result.points,times):
+            point.time_from_start.sec=int(seconds)
+            point.time_from_start.nanosec=int(round((seconds-int(seconds))*1e9))
+            point.velocities=[];point.accelerations=[];point.effort=[]
+        return result
+
+    def place_back_on_table(self,chosen):
+        self.state='PLACE_DESCEND'
+        self.simulation_path(self.reverse_simulation_path(chosen.lift_trajectory))
+        near=self.wait_future(self.sim_near_support.call_async(Trigger.Request()),3.)
+        if not near.success:raise RuntimeError('Placement target is not above the original table position; gripper remains closed')
+        self.state='PLACE_RELEASE';self.sim_gripper.publish(Float64(data=.07))
+        for _ in range(30):self.check_abort();time.sleep(.05)
+        placed=self.wait_future(self.sim_placed.call_async(Trigger.Request()),3.)
+        if not placed.success:raise RuntimeError('Object is not supported after release; return-home cancelled')
+        self.state='PLACE_RETREAT'
+        self.simulation_path(self.reverse_simulation_path(chosen.approach_trajectory))
+        placed=self.wait_future(self.sim_placed.call_async(Trigger.Request()),3.)
+        if not placed.success:raise RuntimeError('Object moved during gripper retreat; return-home cancelled')
+        self.state='RETURN_HOME'
+        self.simulation_path(self.reverse_simulation_path(chosen.pregrasp_trajectory))
+        placed=self.wait_future(self.sim_placed.call_async(Trigger.Request()),3.)
+        if not placed.success:raise RuntimeError('Object did not remain supported on table after release')
+        self.state='PLACED'
+
     def run_simulation(self,chosen):
         try:
             ready=self.wait_future(self.sim_ready.call_async(Trigger.Request()),3)
@@ -117,5 +152,8 @@ class SimulationExecution:
             self.state='LIFT';self.simulation_path(chosen.lift_trajectory)
             for _ in range(40):self.check_abort();self.require_contact();time.sleep(.05)
             self.state='HOLDING'
+            if self.get_parameter('place_after_grasp').value:
+                for _ in range(30):self.check_abort();self.require_contact();time.sleep(.05)
+                self.place_back_on_table(chosen)
         except Exception as exc:self.state='RECOVERY_REQUIRED: '+str(exc)
         finally:self.running=False;self.selected_grasp=None

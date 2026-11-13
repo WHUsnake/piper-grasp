@@ -2,7 +2,9 @@
 
 本目录将主工程维护源作为实际 ROS 节点运行，不调用旧独立仿真程序的 SciPy IK 或抓取动作序列。
 
-实际链路：MuJoCo 虚拟 RGB-D 相机 → `perception_node` 的 YOLO11s-seg 掩膜 → 现有去畸变/侵蚀/深度检查/米制点云 → `grasp_generation` 官方真实权重推理与共享瓶身中段/夹持区适配 → `robot_planner` 的 MoveIt IK、OMPL 预抓取轨迹、完整 Cartesian 进近/抬升轨迹 → `task_executor` 一次抓取状态机 → `/sim/arm_controller/follow_joint_trajectory` → MuJoCo 动力学及实际反馈。
+实际链路：MuJoCo 虚拟 DC1 RGB-D 相机 → `perception_node` 的无类别桌面深度连通区域 → 现有去畸变/侵蚀/深度检查/米制点云 → `grasp_generation` 官方真实权重推理与共享夹持区适配 → `robot_planner` 的 MoveIt IK、OMPL 预抓取轨迹、完整 Cartesian 进近/抬升轨迹 → `task_executor` 一次抓取状态机 → `/sim/arm_controller/follow_joint_trajectory` → MuJoCo 动力学及实际反馈。
+
+早期三物体实验记录：勾选“桌面摆放多物体”，点击“生成 DC1 多物体预览”，然后在右侧 DC1 图像上直接点选水瓶、苹果或小纸盒并运行（当前网页已扩展为五物体）。桌面同时摆放三种不同形状的物体；抓取候选仅来自点选连通区域的 DC1 深度点云，其他物体被加入 MoveIt 障碍场景。点到空白区域或多物体未点选时会拒绝执行；点选自动设置本次目标并核对深度连通区域。2026-11-12 固定布局（目标基准 x=0.72 m、y=0、桌高 0.76 m、TCP 0.095 m）最终验证：水瓶保持阶段最低抬升 8.64 cm，苹果 8.48 cm，小纸盒 11.16 cm，三者双侧接触覆盖均为 100%。网页预览位置保持不变，DC1 点选决定目标；三份结果保存于 simulation/a2_table_grasp/runs/multi_select_{bottle,apple,carton}_final_20261112。该结果只证明此场景和仿真摩擦参数下成功，其他摆位与真机仍需逐项验证。
 
 主工程维护源：`src/perception/perception_node`、`src/manipulation/grasp_generation`、`src/manipulation/robot_planner`、`src/manipulation/task_executor`、`src/interfaces/ros2/grasp_msgs`。原树缺少的包从本工程已审计快照恢复，来源及原哈希在 `data/graspnet/maintained_source_provenance.json`；历史快照和安装产物没有被当作修改目标。共享几何策略现在由 ROS 包的 `grasp_generation/refinement.py` 维护，旧独立仿真仅导入它。
 
@@ -17,7 +19,7 @@ A2_loco_manipulation/simulation/ros_pipeline/run.sh \
   --bottle-x .72 --bottle-y 0 --table-z .76 --tcp-m .095
 ```
 
-运行前需要本机已安装 ROS2 Humble/MoveIt、现有 CUDA GraspNet 环境、YOLO 环境与 MuJoCo 环境。脚本不安装或升级系统依赖。`piper_msgs` 只复用消息定义，不启动 PiPER 驱动。路径配置目前针对这台开发机，不能直接复制到机载端声称部署完成。
+运行前需要本机已安装 ROS2 Humble/MoveIt、现有 CUDA GraspNet 环境与 MuJoCo 环境。脚本不安装或升级系统依赖。`piper_msgs` 只复用消息定义，不启动 PiPER 驱动。路径配置目前针对这台开发机，不能直接复制到机载端声称部署完成。
 
 隔离域为 182，`ROS_LOCALHOST_ONLY=1`；进程锁防止多个实验同时使用同一 ROS 图。启动只包括 MoveIt、状态发布器、感知/候选/规划/执行器与 MuJoCo bridge，不启动 CAN、PiPER SDK、底盘或实机使能。实机 `/task/start` 保持 `execute=false`；仅显式 `/sim/task/start` 可以调用模拟器控制器，并核对本次会话、起始关节和新鲜目标几何。退出、取消会回收本轮拥有的子进程。
 
@@ -58,3 +60,12 @@ MoveIt 场景包括机器人、自碰撞、桌面/桌腿和由目标点云拟合
 当前模拟配置在中段之外搜索观测瓶身40%/60%的夹持高度，保持真实夹持面与TCP的一致关系。先求解实际夹持位姿的IK，再以该解为初值反向求预抓取，避免从零位选到无法连续接近的分支；端点无解的候选不会重复进行相同端点求解。默认10 cm预抓取失败后可搜索6/14 cm，抬升回收选项扩展至12 cm。整个搜索预算90秒，不用过期观测启动执行。
 
 `regression.py --suite wide --output <目录>` 覆盖55 cm高桌、85 cm低桌、大幅左右20 cm偏移和高低桌组合；`--suite edge` 覆盖更低桌面；`--cases default,low,far,far_repeat` 可选择标准用例。所有环境参数保留，不把未找到解误写成物体被抓住。
+
+五物体复杂桌面场景（2026-11-12）：同一 DC1 画面包含水瓶、苹果、小纸盒、易拉罐、水杯，点击轮廓像素决定本次目标；预览中的仿真分割 ID 只用于网页点选映射，实际候选仍来自运行时 DC1 深度连通区域。固定布局 x=0.72 m、y=0、桌高 0.76 m、TCP=0.095 m 的五项物理保持验证均通过，记录在 `simulation/a2_table_grasp/runs/complex_table_{bottle,apple,small_carton,can,cup}_20261112`。对应最低抬升分别为 9.71、8.32、10.82、9.79、10.32 cm，双侧接触覆盖均为 100%。这不代表任意摆位或任意未知物体已验证；苹果结果依赖仿真指尖与表面摩擦设定。
+
+五项证据可用只读检查器复核；它会检查每项结果确实来自 DC1 深度连通区域、真实 GraspNet/MoveIt 主链路、五个深度组件和物理保持判据，不会启动 ROS、MuJoCo、相机、CAN 或机械臂：
+
+```bash
+python3 A2_loco_manipulation/scripts/graspnet/validate_multi_object.py \
+  --output A2_loco_manipulation/data/graspnet/multi_object_validation_20261112.json
+```

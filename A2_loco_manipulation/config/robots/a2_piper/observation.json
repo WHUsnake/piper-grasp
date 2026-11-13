@@ -1,0 +1,24 @@
+{
+  "name": "pitch5_open75_observation",
+  "can_port": "can0",
+  "can_bitrate": 1000000,
+  "joint_deg": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    5.0,
+    0.0
+  ],
+  "gripper_width_m": 0.075,
+  "speed_percent": 5,
+  "gripper_effort_sdk": 1000,
+  "enable_timeout_sec": 10.0,
+  "motion_timeout_sec": 30.0,
+  "gripper_timeout_sec": 10.0,
+  "feedback_max_age_sec": 0.5,
+  "joint_tolerance_deg": 0.3,
+  "gripper_tolerance_m": 0.003,
+  "stable_time_sec": 0.5,
+  "command_hz": 20.0
+}

@@ -1,0 +1,206 @@
+{
+  "total": 13,
+  "passed": 12,
+  "results": [
+    {
+      "case": "near_high",
+      "parameters": {
+        "bottle_x": 0.55,
+        "bottle_y": 0.0,
+        "table_z": 0.85,
+        "tcp_m": 0.095
+      },
+      "exit_code": 0,
+      "success": true,
+      "elapsed_sec": 48.39,
+      "min_hold_lift_m": 0.094764536672452,
+      "bilateral_hold_fraction": 1.0,
+      "evidence_directory": "simulation/ros_pipeline/workspace_optimized01/near_high"
+    },
+    {
+      "case": "far_low",
+      "parameters": {
+        "bottle_x": 0.85,
+        "bottle_y": 0.0,
+        "table_z": 0.65,
+        "tcp_m": 0.095
+      },
+      "exit_code": 1,
+      "success": false,
+      "elapsed_sec": 44.38,
+      "min_hold_lift_m": null,
+      "bilateral_hold_fraction": null,
+      "failure": {
+        "failure": "No candidate passed complete IK/MoveIt planning {\"candidates\": [{\"index\": 0, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 1, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 2, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 3, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 4, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 5, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 6, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 7, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 8, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 9, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 10, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 11, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 12, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 13, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 14, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 15, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 16, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 17, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 18, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 19, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 20, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 21, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 22, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 23, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 24, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 25, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 26, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 27, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 28, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 29, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 30, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 31, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}], \"result\": \"No candidate passed complete IK/MoveIt planning\"}",
+        "planner": "{\"candidates\": [{\"index\": 0, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 1, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 2, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 3, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 4, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 5, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 6, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 7, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 8, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 9, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 10, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 11, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 12, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 13, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 14, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 15, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 16, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 17, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 18, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 19, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 20, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 21, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 22, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 23, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 24, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 25, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 26, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 27, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 28, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 29, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 30, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}, {\"index\": 31, \"score\": 0.09036655724048615, \"stage\": \"grasp_endpoint\", \"pregrasp_distance_m\": 0.10000000149011612, \"grasp_ik\": {\"ik_attempts\": [-31, -31, -31, -31], \"ik_without_collision_code\": -31}, \"status\": \"rejected\", \"reason\": \"Grasp endpoint IK failed: Pregrasp IK failed: no kinematic solution found within limits/search budget; codes=[-31, -31, -31, -31]\"}], \"result\": \"No candidate passed complete IK/MoveIt planning\"}",
+        "execution_started": false
+      },
+      "evidence_directory": "simulation/ros_pipeline/workspace_optimized01/far_low"
+    },
+    {
+      "case": "left_wide",
+      "parameters": {
+        "bottle_x": 0.72,
+        "bottle_y": 0.2,
+        "table_z": 0.73,
+        "tcp_m": 0.095
+      },
+      "exit_code": 0,
+      "success": true,
+      "elapsed_sec": 42.83,
+      "min_hold_lift_m": 0.09857391286242223,
+      "bilateral_hold_fraction": 1.0,
+      "evidence_directory": "simulation/ros_pipeline/workspace_optimized01/left_wide"
+    },
+    {
+      "case": "right_wide",
+      "parameters": {
+        "bottle_x": 0.72,
+        "bottle_y": -0.2,
+        "table_z": 0.73,
+        "tcp_m": 0.095
+      },
+      "exit_code": 0,
+      "success": true,
+      "elapsed_sec": 38.6,
+      "min_hold_lift_m": 0.09881210528524464,
+      "bilateral_hold_fraction": 1.0,
+      "evidence_directory": "simulation/ros_pipeline/workspace_optimized01/right_wide"
+    },
+    {
+      "case": "low_offset",
+      "parameters": {
+        "bottle_x": 0.65,
+        "bottle_y": 0.1,
+        "table_z": 0.6,
+        "tcp_m": 0.095
+      },
+      "exit_code": 0,
+      "success": true,
+      "elapsed_sec": 35.05,
+      "min_hold_lift_m": 0.09988527124368984,
+      "bilateral_hold_fraction": 1.0,
+      "evidence_directory": "simulation/ros_pipeline/workspace_optimized01/low_offset"
+    },
+    {
+      "case": "high_offset",
+      "parameters": {
+        "bottle_x": 0.65,
+        "bottle_y": -0.1,
+        "table_z": 0.85,
+        "tcp_m": 0.095
+      },
+      "exit_code": 0,
+      "success": true,
+      "elapsed_sec": 46.51,
+      "min_hold_lift_m": 0.09902129226004563,
+      "bilateral_hold_fraction": 1.0,
+      "evidence_directory": "simulation/ros_pipeline/workspace_optimized01/high_offset"
+    },
+    {
+      "case": "default",
+      "parameters": {
+        "bottle_x": 0.72,
+        "bottle_y": 0.0,
+        "table_z": 0.76,
+        "tcp_m": 0.095
+      },
+      "exit_code": 0,
+      "success": true,
+      "elapsed_sec": 41.24,
+      "min_hold_lift_m": 0.10127529765330401,
+      "bilateral_hold_fraction": 1.0,
+      "evidence_directory": "simulation/ros_pipeline/workspace_standard01/default"
+    },
+    {
+      "case": "low",
+      "parameters": {
+        "bottle_x": 0.72,
+        "bottle_y": 0.0,
+        "table_z": 0.59,
+        "tcp_m": 0.095
+      },
+      "exit_code": 0,
+      "success": true,
+      "elapsed_sec": 52.65,
+      "min_hold_lift_m": 0.10001373179417028,
+      "bilateral_hold_fraction": 1.0,
+      "evidence_directory": "simulation/ros_pipeline/workspace_standard01/low"
+    },
+    {
+      "case": "far",
+      "parameters": {
+        "bottle_x": 0.79,
+        "bottle_y": 0.0,
+        "table_z": 0.73,
+        "tcp_m": 0.095
+      },
+      "exit_code": 0,
+      "success": true,
+      "elapsed_sec": 46.58,
+      "min_hold_lift_m": 0.10008513400045549,
+      "bilateral_hold_fraction": 1.0,
+      "evidence_directory": "simulation/ros_pipeline/workspace_standard01/far"
+    },
+    {
+      "case": "far_repeat",
+      "parameters": {
+        "bottle_x": 0.79,
+        "bottle_y": 0.0,
+        "table_z": 0.73,
+        "tcp_m": 0.095
+      },
+      "exit_code": 0,
+      "success": true,
+      "elapsed_sec": 42.47,
+      "min_hold_lift_m": 0.09986409852327882,
+      "bilateral_hold_fraction": 1.0,
+      "evidence_directory": "simulation/ros_pipeline/workspace_standard01/far_repeat"
+    },
+    {
+      "case": "short_approach",
+      "parameters": {
+        "bottle_x": 0.65,
+        "bottle_y": 0.0,
+        "table_z": 0.55,
+        "tcp_m": 0.095
+      },
+      "exit_code": 0,
+      "success": true,
+      "elapsed_sec": 74.28,
+      "min_hold_lift_m": 0.10201798364605907,
+      "bilateral_hold_fraction": 1.0,
+      "evidence_directory": "simulation/ros_pipeline/workspace_edge01/short_approach"
+    },
+    {
+      "case": "very_low",
+      "parameters": {
+        "bottle_x": 0.7,
+        "bottle_y": 0.0,
+        "table_z": 0.5,
+        "tcp_m": 0.095
+      },
+      "exit_code": 0,
+      "success": true,
+      "elapsed_sec": 80.63,
+      "min_hold_lift_m": 0.10241754623027599,
+      "bilateral_hold_fraction": 1.0,
+      "evidence_directory": "simulation/ros_pipeline/workspace_edge01/very_low"
+    },
+    {
+      "case": "web_short_approach",
+      "parameters": {
+        "bottle_x": 0.65,
+        "bottle_y": 0.0,
+        "table_z": 0.55,
+        "tcp_m": 0.095
+      },
+      "success": true,
+      "min_hold_lift_m": 0.1001929294420798,
+      "bilateral_hold_fraction": 1.0,
+      "selected_pregrasp_distance_m": 0.05999999865889549,
+      "evidence_directory": "simulation/a2_table_grasp/runs/14c15024922449489ae6c50b66c452c8"
+    }
+  ],
+  "limits": "Sampled fixed-base upright-cylinder simulation only. No proof that all slider settings or physical robot cases are reachable."
+}

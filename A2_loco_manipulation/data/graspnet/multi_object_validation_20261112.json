@@ -1,0 +1,78 @@
+{
+  "pipeline": "ROS2_DC1_DepthComponents_GraspNet_MoveIt_TaskExecutor",
+  "cases": [
+    {
+      "target_kind": "bottle",
+      "success": true,
+      "min_hold_lift_m": 0.09708063516822385,
+      "bilateral_hold_fraction": 1.0,
+      "point_count": 3003,
+      "graspnet_inference_sec": 0.04507023608312011,
+      "selected_dc1_pixel": [
+        327,
+        73
+      ],
+      "components": 5
+    },
+    {
+      "target_kind": "apple",
+      "success": true,
+      "min_hold_lift_m": 0.08323088899126885,
+      "bilateral_hold_fraction": 1.0,
+      "point_count": 1731,
+      "graspnet_inference_sec": 0.044453434995375574,
+      "selected_dc1_pixel": [
+        257,
+        129
+      ],
+      "components": 5
+    },
+    {
+      "target_kind": "small_carton",
+      "success": true,
+      "min_hold_lift_m": 0.10822685583032499,
+      "bilateral_hold_fraction": 1.0,
+      "point_count": 1497,
+      "graspnet_inference_sec": 0.044375732075423,
+      "selected_dc1_pixel": [
+        430,
+        137
+      ],
+      "components": 5
+    },
+    {
+      "target_kind": "can",
+      "success": true,
+      "min_hold_lift_m": 0.09794426004125045,
+      "bilateral_hold_fraction": 1.0,
+      "point_count": 2662,
+      "graspnet_inference_sec": 0.04746594303287566,
+      "selected_dc1_pixel": [
+        84,
+        106
+      ],
+      "components": 5
+    },
+    {
+      "target_kind": "cup",
+      "success": true,
+      "min_hold_lift_m": 0.10318035091312039,
+      "bilateral_hold_fraction": 1.0,
+      "point_count": 2650,
+      "graspnet_inference_sec": 0.04343848396092653,
+      "selected_dc1_pixel": [
+        570,
+        120
+      ],
+      "components": 5
+    }
+  ],
+  "expected": [
+    "bottle",
+    "apple",
+    "small_carton",
+    "can",
+    "cup"
+  ],
+  "success": true
+}

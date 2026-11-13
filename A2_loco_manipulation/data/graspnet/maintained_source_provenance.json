@@ -1,0 +1,14 @@
+{
+  "robot_planner": {
+    "source": "A2_loco_manipulation/data/unified-inspection/earlier-project/work/rc1-20261022/search-grasp-v1/src/robot_planner",
+    "sha256_node": "27d91a3124d9149ff9e0e28aff38ef5230d073c50917c018711b1a960186272d"
+  },
+  "task_executor": {
+    "source": "A2_loco_manipulation/data/unified-inspection/earlier-project/work/rc1-20261022/search-grasp-v1/src/task_executor",
+    "sha256_node": "a779de873d83a90d046176af44105b65d26fd0bb681cee8bab01d6f3b46585c0"
+  },
+  "perception_node": {
+    "source": "search-grasp2/src/perception_node",
+    "sha256_node": "da71482a89057ecdbb9de497733447d501b5785d1694107a2b04f976993a5d2c"
+  }
+}

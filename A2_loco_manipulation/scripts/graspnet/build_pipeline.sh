@@ -2,7 +2,9 @@
 set -eo pipefail
 ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd)"
 source /opt/ros/humble/setup.bash
-source "$ROOT/../runtime/piper_msgs/share/piper_msgs/local_setup.bash"
+if [[ -n "${PIPER_MSGS_SETUP:-}" && -f "$PIPER_MSGS_SETUP" ]]; then
+  source "$PIPER_MSGS_SETUP"
+fi
 export PATH="/usr/bin:/bin:/opt/ros/humble/bin:$PATH"
 exec colcon --log-base "$ROOT/workspaces/pipeline/log" build \
  --base-paths "$ROOT/src/interfaces/ros2/grasp_msgs" "$ROOT/src/manipulation" "$ROOT/src/perception" \

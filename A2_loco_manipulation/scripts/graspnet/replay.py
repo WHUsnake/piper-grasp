@@ -7,6 +7,7 @@ as --base-rotation JSON file for a physically meaningful horizontal selection.
 """
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 import time
@@ -36,7 +37,10 @@ def main():
         adapter.update(horizontal_tolerance_deg=90.,closing_tolerance_deg=90.)
     records=[]
     start=time.monotonic()
-    worker=Worker(cfg['worker_python'],ROOT/'src/manipulation/grasp_generation/grasp_generation/worker.py',str(args.config.resolve()))
+    worker_python = os.path.expandvars(cfg.get('worker_python', ''))
+    if not worker_python or worker_python.startswith('${'):
+        worker_python = os.environ.get('GRASPNET_PYTHON', sys.executable)
+    worker=Worker(worker_python,ROOT/'src/manipulation/grasp_generation/grasp_generation/worker.py',str(args.config.resolve()))
     load=time.monotonic()-start
     try:
         for entry in json.loads(args.samples.read_text())['observations']:

@@ -1,5 +1,6 @@
 """ROS-independent GraspNet inference and PiPER proposal adaptation (metres)."""
 import hashlib
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -9,17 +10,25 @@ from scipy.spatial.transform import Rotation
 AXES = np.array([[0., 0., 1.], [0., 1., 0.], [-1., 0., 0.]])
 
 
+def _configured_path(value, variable):
+    expanded = os.path.expandvars(str(value)).strip()
+    if not expanded or expanded.startswith('${'):
+        raise ValueError(f'Set {variable} to the GraspNet path before starting inference')
+    return Path(expanded).expanduser()
+
+
 class Predictor:
     def __init__(self, config):
         import torch
         g = config
-        repo = Path(g['repository'])
+        repo = _configured_path(g['repository'], 'GRASPNET_BASELINE')
         revision = subprocess.check_output(['git', '-C', str(repo), 'rev-parse', 'HEAD'], text=True).strip()
         if revision != g['commit']:
             raise ValueError('GraspNet commit mismatch')
         if subprocess.check_output(['git', '-C', str(repo), 'status', '--porcelain'], text=True).strip():
             raise ValueError('GraspNet source is modified')
-        if hashlib.sha256(Path(g['checkpoint']).read_bytes()).hexdigest() != g['sha256']:
+        checkpoint = _configured_path(g['checkpoint'], 'GRASPNET_CHECKPOINT')
+        if hashlib.sha256(checkpoint.read_bytes()).hexdigest() != g['sha256']:
             raise ValueError('Checkpoint SHA256 mismatch')
         if not torch.cuda.is_available():
             raise RuntimeError('Official compiled operators require CUDA')
@@ -31,7 +40,7 @@ class Predictor:
         self.net = GraspNet(input_feature_dim=0, num_view=300, num_angle=12, num_depth=4,
                             cylinder_radius=.05, hmin=-.02, hmax_list=[.01,.02,.03,.04],
                             is_training=False).cuda()
-        ckpt = torch.load(g['checkpoint'], map_location='cuda', weights_only=True)
+        ckpt = torch.load(checkpoint, map_location='cuda', weights_only=True)
         self.net.load_state_dict(ckpt['model_state_dict'], strict=True)
         self.net.eval()
         self.num_points = int(g.get('num_points', 20000))

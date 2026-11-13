@@ -29,6 +29,87 @@ def fit_bottle(points):
                 preferred_contact_height_fraction=.50,fit_rmse_m=float(np.sqrt(np.mean(residual**2))))
 
 
+def fit_near_sphere(points,support_surface_z=None):
+    """Infer the hidden half of a round target from its segmented visible surface."""
+    points=np.asarray(points,float)
+    if points.ndim!=2 or points.shape[1]!=3 or len(points)<100 or not np.isfinite(points).all():
+        raise ValueError('Insufficient finite target points')
+    low,high=np.percentile(points,[1,99],axis=0)
+    span=high-low
+    if np.any(span<.008) or np.any(span>.13):
+        raise ValueError('Target extent is outside the supported near-spherical range')
+    a=np.column_stack([2*points,np.ones(len(points))]);b=np.sum(points**2,axis=1)
+    coef,_,rank,_=np.linalg.lstsq(a,b,rcond=None)
+    centre=coef[:3];radius=float(np.sqrt(max(0,coef[3]+np.sum(centre**2))))
+    residual=np.linalg.norm(points-centre,axis=1)-radius
+    if rank<4 or not .015<radius<.065 or np.sqrt(np.mean(residual**2))>.008:
+        raise ValueError('Target cloud does not support a stable near-sphere fit')
+    radius+=.0005
+    if support_surface_z is not None:
+        # The MoveIt collision primitive adds 1 mm. Keep an object resting on
+        # the support plane out of initial collision without shrinking it.
+        centre[2]=max(centre[2],float(support_surface_z)+radius+.0015)
+    return dict(shape='sphere',center=centre.tolist(),radius_m=radius,
+                observed_height_m=float(span[2]),observed_extent_m=span.tolist(),
+                fit_rmse_m=float(np.sqrt(np.mean(residual**2))))
+
+
+def refine_near_sphere_candidates(candidates,points,tcp_m,max_opening_m=.075,support_surface_z=None):
+    fit=fit_near_sphere(points,support_surface_z);centre=np.asarray(fit['center']);opening=2*fit['radius_m']+.004
+    if opening>max_opening_m:
+        raise ValueError(f'Target requires {opening:.3f} m opening; gripper limit is {max_opening_m:.3f} m')
+    output=[]
+    for original in candidates:
+        c=dict(original);approach=np.asarray(c['rotation_world'])[:,2]
+        old=np.asarray(c['position']);target=centre+approach*(tcp_m-PAD_CENTER_FROM_LINK6_M)
+        c.update(network_tcp_position_world=old.tolist(),position=target.tolist(),
+                 contact_center_world=centre.tolist(),geometry_refined=True,
+                 geometry_opening_m=opening,network_opening_m=float(c['width']),width=max(float(c['width']),opening),
+                 selection_score=float(c['score']-.5*np.linalg.norm(target-old)),
+                 orientation_adaptation='near_sphere_network_direction')
+        if c['width']<=max_opening_m:output.append(c)
+    output.sort(key=lambda c:c['selection_score'],reverse=True)
+    return output,fit
+
+
+def refine_box_candidates(candidates,points,tcp_m,size_m,support_surface_z,max_opening_m=.075):
+    """Fit a front-visible, axis-aligned box using its declared size as a prior.
+
+    A single depth view cannot determine the hidden rear face. The configured
+    box dimensions are therefore an explicit simulation prior, not an oracle
+    pose or a replacement for GraspNet orientation proposals.
+    """
+    points=np.asarray(points,float);size=np.asarray(size_m,float)
+    if points.ndim!=2 or points.shape[1]!=3 or len(points)<100 or not np.isfinite(points).all():
+        raise ValueError('Insufficient finite box points')
+    if size.shape!=(3,) or np.any(size<=0) or np.any(size>.15):
+        raise ValueError('Invalid box size prior')
+    low,high=np.percentile(points,[1,99],axis=0)
+    if high[2]-low[2]<.012 or high[2]-low[2]>size[2]+.015:
+        raise ValueError('Observed box height inconsistent with size prior')
+    # The depth camera views the negative-X face. Use its nearest observed
+    # surface, the observed lateral midpoint, and the measured support plane.
+    centre=np.array([float(np.percentile(points[:,0],10)+size[0]/2),
+                     float((low[1]+high[1])/2),float(support_surface_z+size[2]/2+.001)])
+    opening=float(size[1]+.010)
+    if opening>max_opening_m:raise ValueError('Box exceeds gripper opening')
+    fit=dict(shape='box',center=centre.tolist(),size_m=size.tolist(),
+             radius_m=float(size[1]/2),observed_height_m=float(size[2]),
+             observed_extent_m=(high-low).tolist(),size_prior=True)
+    output=[]
+    for original in candidates:
+        c=dict(original);axis=np.asarray(c['rotation_world'])[:,2]
+        old=np.asarray(c['position']);target=centre+axis*(tcp_m-PAD_CENTER_FROM_LINK6_M)
+        c.update(network_tcp_position_world=old.tolist(),position=target.tolist(),
+                 contact_center_world=centre.tolist(),geometry_refined=True,
+                 geometry_opening_m=opening,network_opening_m=float(c['width']),width=max(float(c['width']),opening),
+                 selection_score=float(c['score']-.5*np.linalg.norm(target-old)),
+                 orientation_adaptation='box_network_direction')
+        if c['width']<=max_opening_m:output.append(c)
+    output.sort(key=lambda c:c['selection_score'],reverse=True)
+    return output,fit
+
+
 def refine_candidates(candidates,points,tcp_m):
     fit=fit_bottle(points);span=fit['observed_height_m'];bottom=fit['bottom_observed_z_m']
     target_z=bottom+fit['preferred_contact_height_fraction']*span

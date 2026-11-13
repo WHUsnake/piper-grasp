@@ -45,9 +45,18 @@ class FullPlanning:
             if self.get_parameter('require_target_collision').value:raise ValueError('Exact target collision geometry unavailable')
             return None
         if data['geometry_frame']!=self.get_parameter('base_frame').value:raise ValueError('Target collision frame mismatch')
-        fit=data['geometry_fit'];obj=CollisionObject();obj.id='selected_bottle';obj.header.frame_id=data['geometry_frame'];obj.operation=CollisionObject.ADD
-        primitive=SolidPrimitive();primitive.type=SolidPrimitive.CYLINDER;primitive.dimensions=[fit['observed_height_m'],fit['radius_m']+.001]
-        pose=Pose();pose.position.x,pose.position.y=map(float,fit['axis_xy']);pose.position.z=(fit['bottom_observed_z_m']+fit['top_observed_z_m'])/2;pose.orientation.w=1.
+        fit=data['geometry_fit'];obj=CollisionObject();obj.id='selected_target';obj.header.frame_id=data['geometry_frame'];obj.operation=CollisionObject.ADD
+        primitive=SolidPrimitive();pose=Pose();pose.orientation.w=1.
+        if fit.get('shape')=='sphere':
+            primitive.type=SolidPrimitive.SPHERE;primitive.dimensions=[fit['radius_m']+.001]
+            pose.position.x,pose.position.y,pose.position.z=map(float,fit['center'])
+        elif fit.get('shape','cylinder')=='cylinder':
+            primitive.type=SolidPrimitive.CYLINDER;primitive.dimensions=[fit['observed_height_m'],fit['radius_m']+.001]
+            pose.position.x,pose.position.y=map(float,fit['axis_xy']);pose.position.z=(fit['bottom_observed_z_m']+fit['top_observed_z_m'])/2
+        elif fit.get('shape')=='box':
+            primitive.type=SolidPrimitive.BOX;primitive.dimensions=[float(v)+.001 for v in fit['size_m']]
+            pose.position.x,pose.position.y,pose.position.z=map(float,fit['center'])
+        else:raise ValueError('Unsupported target collision shape')
         obj.primitives=[primitive];obj.primitive_poses=[pose]
         self.apply_target(obj);return obj
 
@@ -270,8 +279,9 @@ class FullPlanning:
                     selected.candidate.gripper_width_m=min(c.gripper_width_m,self.get_parameter('max_gripper_width_m').value)
                     if target_object is not None:
                         selected.observed_object_center=copy.deepcopy(target_object.primitive_poses[0].position)
-                        selected.observed_object_radius_m=float(target_object.primitives[0].dimensions[1]-.001)
-                        selected.observed_object_height_m=float(target_object.primitives[0].dimensions[0])
+                        primitive=target_object.primitives[0]
+                        selected.observed_object_radius_m=float(primitive.dimensions[0 if primitive.type==SolidPrimitive.SPHERE else 1]-.001) if primitive.type!=SolidPrimitive.BOX else float((primitive.dimensions[1]-.001)/2)
+                        selected.observed_object_height_m=float(primitive.dimensions[0] if primitive.type==SolidPrimitive.CYLINDER else 2*(primitive.dimensions[0]-.001)) if primitive.type!=SolidPrimitive.BOX else float(primitive.dimensions[2]-.001)
                     selected.pregrasp_pose=pre;selected.lift_pose=lift
                     selected.pregrasp_trajectory=pre_traj;selected.approach_trajectory=grasp_traj;selected.lift_trajectory=lift_traj
                     self.selection.publish(selected)

@@ -1,0 +1,500 @@
+{
+  "weights": "yolo11s-seg.pt",
+  "count": 80,
+  "classes": [
+    {
+      "id": 0,
+      "name": "person",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 1,
+      "name": "bicycle",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 2,
+      "name": "car",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 3,
+      "name": "motorcycle",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 4,
+      "name": "airplane",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 5,
+      "name": "bus",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 6,
+      "name": "train",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 7,
+      "name": "truck",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 8,
+      "name": "boat",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 9,
+      "name": "traffic light",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 10,
+      "name": "fire hydrant",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 11,
+      "name": "stop sign",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 12,
+      "name": "parking meter",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 13,
+      "name": "bench",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 14,
+      "name": "bird",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 15,
+      "name": "cat",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 16,
+      "name": "dog",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 17,
+      "name": "horse",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 18,
+      "name": "sheep",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 19,
+      "name": "cow",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 20,
+      "name": "elephant",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 21,
+      "name": "bear",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 22,
+      "name": "zebra",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 23,
+      "name": "giraffe",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 24,
+      "name": "backpack",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 25,
+      "name": "umbrella",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 26,
+      "name": "handbag",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 27,
+      "name": "tie",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 28,
+      "name": "suitcase",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 29,
+      "name": "frisbee",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 30,
+      "name": "skis",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 31,
+      "name": "snowboard",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 32,
+      "name": "sports ball",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 33,
+      "name": "kite",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 34,
+      "name": "baseball bat",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 35,
+      "name": "baseball glove",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 36,
+      "name": "skateboard",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 37,
+      "name": "surfboard",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 38,
+      "name": "tennis racket",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 39,
+      "name": "bottle",
+      "simulation_target_available": true,
+      "physical_grasp_verified": true
+    },
+    {
+      "id": 40,
+      "name": "wine glass",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 41,
+      "name": "cup",
+      "simulation_target_available": true,
+      "physical_grasp_verified": true
+    },
+    {
+      "id": 42,
+      "name": "fork",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 43,
+      "name": "knife",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 44,
+      "name": "spoon",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 45,
+      "name": "bowl",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 46,
+      "name": "banana",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 47,
+      "name": "apple",
+      "simulation_target_available": true,
+      "physical_grasp_verified": true
+    },
+    {
+      "id": 48,
+      "name": "sandwich",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 49,
+      "name": "orange",
+      "simulation_target_available": true,
+      "physical_grasp_verified": true
+    },
+    {
+      "id": 50,
+      "name": "broccoli",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 51,
+      "name": "carrot",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 52,
+      "name": "hot dog",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 53,
+      "name": "pizza",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 54,
+      "name": "donut",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 55,
+      "name": "cake",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 56,
+      "name": "chair",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 57,
+      "name": "couch",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 58,
+      "name": "potted plant",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 59,
+      "name": "bed",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 60,
+      "name": "dining table",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 61,
+      "name": "toilet",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 62,
+      "name": "tv",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 63,
+      "name": "laptop",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 64,
+      "name": "mouse",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 65,
+      "name": "remote",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 66,
+      "name": "keyboard",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 67,
+      "name": "cell phone",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 68,
+      "name": "microwave",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 69,
+      "name": "oven",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 70,
+      "name": "toaster",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 71,
+      "name": "sink",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 72,
+      "name": "refrigerator",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 73,
+      "name": "book",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 74,
+      "name": "clock",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 75,
+      "name": "vase",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 76,
+      "name": "scissors",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 77,
+      "name": "teddy bear",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 78,
+      "name": "hair drier",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    },
+    {
+      "id": 79,
+      "name": "toothbrush",
+      "simulation_target_available": false,
+      "physical_grasp_verified": false
+    }
+  ],
+  "simulation_only_targets": [
+    {
+      "name": "egg",
+      "yolo_class": null,
+      "model": "ellipsoid",
+      "physical_grasp_verified": false
+    },
+    {
+      "name": "can",
+      "yolo_class": null,
+      "model": "cylinder",
+      "physical_grasp_verified": true
+    }
+  ]
+}

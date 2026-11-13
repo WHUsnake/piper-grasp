@@ -24,7 +24,17 @@ def quat(r):
     q=r.as_quat();return vec(q[[3,0,1,2]])
 
 
-def build(out, bottle_x=.72, table_z=.76, tcp_m=.095, bottle_y=0.):
+MULTI_LAYOUT={'bottle':(0.,0.),'apple':(-.04,.08),'small_carton':(-.04,-.12),
+              'can':(-.09,.25),'cup':(-.09,-.25)}
+
+
+def target_xy(bottle_x,bottle_y,target_kind,multi_objects):
+    dx,dy=MULTI_LAYOUT[target_kind] if multi_objects else (0.,0.)
+    return bottle_x+dx,bottle_y+dy
+
+
+def build(out, bottle_x=.72, table_z=.76, tcp_m=.095, bottle_y=0., target_kind='bottle', multi_objects=False):
+    if target_kind not in ('bottle','round_proxy','apple','orange','egg','can','cup','small_carton','tissue_box','cup_inverted'):raise ValueError('Unsupported target kind')
     root=ET.parse(A2/'a2.xml').getroot();root.set('model','A2_PiPER_table_grasp')
     root.find('compiler').set('meshdir',str(A2/'meshes'))
     root.find('option').set('timestep','.002');root.find('option').set('integrator','implicitfast')
@@ -72,7 +82,7 @@ def build(out, bottle_x=.72, table_z=.76, tcp_m=.095, bottle_y=0.):
     tip=root.find(".//body[@name='p_link6']")
     ET.SubElement(tip,'site',name='tcp',pos=vec([0,0,tcp_m]),size='.006',rgba='0 .95 .75 1')
     for g in root.findall(".//body[@name='p_link7']/geom")+root.findall(".//body[@name='p_link8']/geom"):
-        if g.get('class')=='p_collision':g.set('friction','1.2 .01 .001');g.set('condim','4')
+        if g.get('class')=='p_collision':g.set('friction','2 .01 .001');g.set('condim','4')
     ET.SubElement(root,'visual').append(ET.Element('global',offwidth='1280',offheight='720'))
     ET.SubElement(root.find('visual'),'quality',shadowsize='2048')
     ET.SubElement(root.find('visual'),'headlight',ambient='.35 .35 .35',diffuse='.65 .65 .65',specular='.15 .15 .15')
@@ -80,20 +90,71 @@ def build(out, bottle_x=.72, table_z=.76, tcp_m=.095, bottle_y=0.):
     ET.SubElement(wb,'light',pos='0 -2 3',dir='0 .3 -1',diffuse='.9 .9 .9',castshadow='true')
     ET.SubElement(wb,'light',pos='2 1 2',diffuse='.45 .5 .6')
     ET.SubElement(wb,'geom',name='floor',type='plane',size='4 4 .05',rgba='.12 .16 .21 1',friction='1 .01 .001')
-    ET.SubElement(wb,'geom',name='table_top',type='box',pos=vec([bottle_x+.20,0,table_z-.025]),size='.28 .40 .025',rgba='.60 .43 .27 1',friction='1 .01 .001')
+    ET.SubElement(wb,'geom',name='table_top',type='box',pos=vec([bottle_x+.20,0,table_z-.025]),size=('.38 .40 .025' if multi_objects else '.28 .40 .025'),rgba='.60 .43 .27 1',friction='1 .01 .001')
     for xi,x in enumerate([bottle_x-.01,bottle_x+.41]):
         for yi,y in enumerate([-.32,.32]):ET.SubElement(wb,'geom',name=f'table_leg_{xi}_{yi}',type='box',pos=vec([x,y,(table_z-.05)/2]),size=vec([.022,.022,(table_z-.05)/2]),rgba='.18 .23 .28 1')
-    bottle=ET.SubElement(wb,'body',name='bottle',pos=vec([bottle_x,bottle_y,table_z+.105]))
-    ET.SubElement(bottle,'freejoint',name='bottle_free')
-    ET.SubElement(bottle,'geom',name='bottle_body',type='cylinder',size='.026 .09',pos='0 0 -.015',mass='.18',rgba='.12 .63 .73 1',friction='1 .01 .001',condim='4')
-    ET.SubElement(bottle,'geom',name='bottle_shoulder',type='ellipsoid',size='.026 .026 .022',pos='0 0 .073',mass='.01',rgba='.15 .68 .77 1')
-    ET.SubElement(bottle,'geom',name='bottle_neck',type='cylinder',size='.014 .017',pos='0 0 .095',mass='.005',rgba='.18 .72 .80 1')
-    ET.SubElement(bottle,'geom',name='bottle_cap',type='cylinder',size='.016 .008',pos='0 0 .117',mass='.005',rgba='.96 .77 .23 1')
-    ET.SubElement(bottle,'geom',name='bottle_label',type='cylinder',size='.0262 .03',pos='0 0 -.005',contype='0',conaffinity='0',mass='0',rgba='.83 .94 .94 1')
+    active_x,active_y=target_xy(bottle_x,bottle_y,target_kind,multi_objects)
+    if target_kind=='bottle':
+        bottle=ET.SubElement(wb,'body',name='bottle',pos=vec([active_x,active_y,table_z+.105]))
+        ET.SubElement(bottle,'freejoint',name='bottle_free')
+        ET.SubElement(bottle,'geom',name='bottle_body',type='cylinder',size='.026 .09',pos='0 0 -.015',mass='.18',rgba='.12 .63 .73 1',friction='1 .01 .001',condim='4')
+        ET.SubElement(bottle,'geom',name='bottle_shoulder',type='ellipsoid',size='.026 .026 .022',pos='0 0 .073',mass='.01',rgba='.15 .68 .77 1')
+        ET.SubElement(bottle,'geom',name='bottle_neck',type='cylinder',size='.014 .017',pos='0 0 .095',mass='.005',rgba='.18 .72 .80 1')
+        ET.SubElement(bottle,'geom',name='bottle_cap',type='cylinder',size='.016 .008',pos='0 0 .117',mass='.005',rgba='.96 .77 .23 1')
+        ET.SubElement(bottle,'geom',name='bottle_label',type='cylinder',size='.0262 .03',pos='0 0 -.005',contype='0',conaffinity='0',mass='0',rgba='.83 .94 .94 1')
+    else:
+        specs={'round_proxy':('sphere','.028',.028,.12,'.72 .07 .025 1'),
+               'apple':('sphere','.029',.029,.12,'.72 .07 .025 1'),
+               'orange':('sphere','.027',.027,.13,'.92 .38 .025 1'),
+               'egg':('ellipsoid','.020 .020 .028',.028,.06,'.90 .84 .70 1'),
+               'can':('cylinder','.024 .055',.055,.17,'.72 .75 .78 1'),
+               'cup':('cylinder','.029 .045',.045,.14,'.87 .87 .83 1'),
+               'cup_inverted':('cylinder','.029 .045',.045,.14,'.87 .87 .83 1'),
+               'small_carton':('box','.022 .022 .022',.022,.09,'.34 .69 .36 1'),
+               'tissue_box':('box','.042 .022 .032',.032,.11,'.79 .61 .36 1')}
+        shape,size,half_height,mass,color=specs[target_kind]
+        target=ET.SubElement(wb,'body',name='round_target',pos=vec([active_x,active_y,table_z+(.020 if target_kind=='egg' else half_height)]))
+        if target_kind=='egg':target.set('quat',quat(Rotation.from_euler('y',90,degrees=True)))
+        ET.SubElement(target,'freejoint',name='round_target_free')
+        ET.SubElement(target,'geom',name='round_target_body',type=shape,size=size,mass=str(mass),rgba=color,friction='2.3 .01 .001' if target_kind=='apple' else '1.2 .01 .001',condim='4')
+        if target_kind=='cup_inverted':
+            # A visible raised rim at the bottom identifies the upside-down cup.
+            ET.SubElement(target,'geom',name='inverted_cup_rim',type='cylinder',size='.031 .003',pos='0 0 -.042',mass='.008',rgba='.70 .70 .66 1',friction='1.2 .01 .001')
+        if target_kind in ('apple','round_proxy'):
+            ET.SubElement(target,'geom',name='round_target_stem',type='cylinder',size='.002 .005',pos=vec([0,0,half_height+.003]),mass='.001',contype='0',conaffinity='0',rgba='.28 .17 .065 1')
+    if multi_objects:
+        # Additional physical objects are visible to DC1 and collide in MuJoCo.
+        # They are deliberately not used to create the selected target's mask.
+        distractors=[('apple','sphere','.029',.029,.12,'.72 .07 .025 1'),
+                     ('small_carton','box','.022 .022 .022',.022,.09,'.34 .69 .36 1'),
+                     ('can','cylinder','.024 .055',.055,.17,'.72 .75 .78 1'),
+                     ('cup','cylinder','.029 .045',.045,.14,'.87 .87 .83 1')]
+        for kind,shape,size,half,mass,color in distractors:
+            if kind==target_kind:continue
+            x,y=target_xy(bottle_x,bottle_y,kind,True)
+            body=ET.SubElement(wb,'body',name=f'demo_{kind}',pos=vec([x,y,table_z+half]))
+            ET.SubElement(body,'freejoint',name=f'demo_{kind}_free')
+            ET.SubElement(body,'geom',name=f'demo_{kind}_body',type=shape,size=size,mass=str(mass),rgba=color,friction='2.3 .01 .001' if kind=='apple' else '1.2 .01 .001',condim='4')
+            if kind=='apple':ET.SubElement(body,'geom',name='demo_apple_stem',type='cylinder',size='.002 .005',pos='0 0 .032',mass='.001',contype='0',conaffinity='0',rgba='.28 .17 .065 1')
+        if target_kind!='bottle':
+            body=ET.SubElement(wb,'body',name='demo_bottle',pos=vec([bottle_x,bottle_y,table_z+.105]))
+            ET.SubElement(body,'freejoint',name='demo_bottle_free')
+            for name,shape,size,pos,mass,color in [('body','cylinder','.026 .09','0 0 -.015','.18','.12 .63 .73 1'),('shoulder','ellipsoid','.026 .026 .022','0 0 .073','.01','.15 .68 .77 1'),('neck','cylinder','.014 .017','0 0 .095','.005','.18 .72 .80 1'),('cap','cylinder','.016 .008','0 0 .117','.005','.96 .77 .23 1')]:
+                ET.SubElement(body,'geom',name=f'demo_bottle_{name}',type=shape,size=size,pos=pos,mass=mass,rgba=color,friction='1 .01 .001',condim='4')
+            ET.SubElement(body,'geom',name='demo_bottle_label',type='cylinder',size='.0262 .03',pos='0 0 -.005',contype='0',conaffinity='0',mass='0',rgba='.83 .94 .94 1')
     # Virtual RGB-D camera on a fixed experimental tripod, looking toward the front surface.
-    camera_pos=np.array([min(.35,bottle_x-.34),-.04,table_z+.11]);look=np.array([bottle_x,bottle_y,table_z+.10])
+    target_height=.10 if target_kind=='bottle' else .08 if target_kind in ('can','cup','cup_inverted') else .035
+    camera_pos=np.array([min(.35,bottle_x-.34),-.04,table_z+target_height+.01]);look=np.array([bottle_x,bottle_y,table_z+target_height])
     z=(camera_pos-look);z/=np.linalg.norm(z);x=np.cross([0,0,1],z);x/=np.linalg.norm(x);y=np.cross(z,x)
     ET.SubElement(wb,'camera',name='depth_camera',pos=vec(camera_pos),xyaxes=vec(np.r_[x,y]),fovy='48')
+    # The operational RGB-D sensor is eye-in-hand. MuJoCo cameras look down
+    # local -Z, whereas the calibrated ROS optical frame looks down +Z.
+    profile=json.loads((ROOT/'site/dist/dc1_profile.json').read_text())
+    link6=wb.find(".//body[@name='p_link6']")
+    if link6 is None:raise ValueError('PiPER link6 missing for DC1 camera')
+    optical=Rotation.from_quat(profile['quaternion_xyzw'])
+    gl_camera=optical*Rotation.from_euler('x',180,degrees=True)
+    ET.SubElement(link6,'camera',name='dc1_rgbd',pos=vec(profile['translation_m']),quat=quat(gl_camera),fovy=str(profile['fovy_deg']))
     xml=ET.tostring(root,encoding='unicode');model=mujoco.MjModel.from_xml_string(xml)
     data=mujoco.MjData(model);mujoco.mj_forward(model,data)
     # Set standing height from the official feet positions, so all four feet rest on the ground.
@@ -106,15 +167,16 @@ def build(out, bottle_x=.72, table_z=.76, tcp_m=.095, bottle_y=0.):
 
 def capture(m,d,out):
     r=mujoco.Renderer(m,height=480,width=640)
-    r.update_scene(d,camera='depth_camera');rgb=r.render().copy()
-    r.enable_depth_rendering();r.update_scene(d,camera='depth_camera');depth=r.render().copy()
-    r.disable_depth_rendering();r.enable_segmentation_rendering();r.update_scene(d,camera='depth_camera');seg=r.render().copy();r.close()
+    r.update_scene(d,camera='dc1_rgbd');rgb=r.render().copy()
+    r.enable_depth_rendering();r.update_scene(d,camera='dc1_rgbd');depth=r.render().copy()
+    r.disable_depth_rendering();r.enable_segmentation_rendering();r.update_scene(d,camera='dc1_rgbd');seg=r.render().copy();r.close()
     ids=[m.geom(n).id for n in ['bottle_body','bottle_shoulder','bottle_neck','bottle_cap','bottle_label']]
     mask=np.isin(seg[:,:,0],ids)&(seg[:,:,1]==int(mujoco.mjtObj.mjOBJ_GEOM))
     v,u=np.nonzero(mask&(depth>.05)&(depth<2))
-    z=depth[v,u];f=240/np.tan(np.deg2rad(48)/2)
+    if len(v)<100:raise RuntimeError('DC1 cannot see enough of the target; no grasp candidates may be generated')
+    z=depth[v,u];f=240/np.tan(np.deg2rad(60)/2)
     camera=np.column_stack([(u-319.5)*z/f,(v-239.5)*z/f,z])
-    cid=m.camera('depth_camera').id;rot=d.cam_xmat[cid].reshape(3,3)@np.diag([1,-1,-1]);trans=d.cam_xpos[cid].copy()
+    cid=m.camera('dc1_rgbd').id;rot=d.cam_xmat[cid].reshape(3,3)@np.diag([1,-1,-1]);trans=d.cam_xpos[cid].copy()
     world=camera@rot.T+trans
     np.savez_compressed(out/'observation.npz',points_camera_m=camera,points_world_m=world,depth_m=depth,mask=mask,rotation=rot,translation=trans)
     imageio.imwrite(out/'camera_rgb.png',rgb);imageio.imwrite(out/'mask.png',mask.astype('uint8')*255)

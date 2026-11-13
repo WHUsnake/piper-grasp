@@ -1,5 +1,7 @@
 """Target-only GraspNet proposals; acquisition headers and execution gates retained."""
 import json
+import os
+import sys
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 import numpy as np
@@ -14,7 +16,7 @@ from scipy.spatial.transform import Rotation
 from tf2_ros import Buffer, TransformListener
 from ament_index_python.packages import get_package_share_directory
 from .geometry import candidates
-from .refinement import refine_candidates,parallel_gripper_symmetries,upright_orientation_search
+from .refinement import refine_candidates,refine_near_sphere_candidates,refine_box_candidates,parallel_gripper_symmetries,upright_orientation_search
 from .graspnet_backend import adapt
 from .worker_client import Worker
 
@@ -37,7 +39,9 @@ class GraspGenerator(Node):
         if self.backend == 'graspnet':
             config = self.get_parameter('graspnet_config').value
             self.cfg = json.loads(Path(config).read_text())
-            python = self.get_parameter('worker_python').value or self.cfg['worker_python']
+            python = self.get_parameter('worker_python').value or os.path.expandvars(self.cfg.get('worker_python', ''))
+            if not python or python.startswith('${'):
+                python = os.environ.get('GRASPNET_PYTHON', sys.executable)
             # Load once, outside ROS callbacks. No candidate until ready.
             self.worker = Worker(python, Path(__file__).with_name('worker.py'), config)
         self.create_subscription(BoundTargetCloud, '/grasp_perception/target', self.bound, 2)
@@ -108,8 +112,24 @@ class GraspGenerator(Node):
                                 c['position']=(rb@c['position']+translation).tolist()
                                 c['rotation_world']=(rb@Rotation.from_quat(c['quaternion']).as_matrix()).tolist()
                                 c['quaternion']=Rotation.from_matrix(c['rotation_world']).as_quat().tolist()
-                            proposals,fit=refine_candidates(proposals,world,refinement['tcp_m'])
-                            if refinement.get('orientation_search',False):proposals=upright_orientation_search(proposals,refinement['tcp_m'],refinement.get('approach_origin_world'),refinement.get('contact_height_fractions',[.5]))
+                            shape=refinement.get('shape','upright_cylinder')
+                            if shape=='upright_cylinder':
+                                proposals,fit=refine_candidates(proposals,world,refinement['tcp_m'])
+                                if refinement.get('orientation_search',False):proposals=upright_orientation_search(proposals,refinement['tcp_m'],refinement.get('approach_origin_world'),refinement.get('contact_height_fractions',[.5]))
+                            elif shape=='near_sphere':
+                                proposals,fit=refine_near_sphere_candidates(proposals,world,refinement['tcp_m'],self.cfg['adapter']['maximum_width_m'],refinement.get('support_surface_z'))
+                                if refinement.get('orientation_search',False):
+                                    proposals=upright_orientation_search(proposals,refinement['tcp_m'],refinement.get('approach_origin_world'))
+                                    for c in proposals:
+                                        if c.get('orientation_adaptation')=='upright_cylinder_network_and_radial_search':
+                                            c['orientation_adaptation']='near_sphere_network_and_radial_search'
+                            elif shape=='box':
+                                proposals,fit=refine_box_candidates(proposals,world,refinement['tcp_m'],refinement['size_m'],refinement['support_surface_z'],self.cfg['adapter']['maximum_width_m'])
+                                if refinement.get('orientation_search',False):
+                                    proposals=upright_orientation_search(proposals,refinement['tcp_m'],refinement.get('approach_origin_world'))
+                                    for c in proposals:
+                                        if c.get('orientation_adaptation')=='upright_cylinder_network_and_radial_search':c['orientation_adaptation']='box_network_and_radial_search'
+                            else:raise ValueError('Unsupported target geometry: '+str(shape))
                             proposals=parallel_gripper_symmetries(proposals)[:self.cfg['adapter']['max_candidates']]
                             for c in proposals:
                                 c['position']=(rb.T@(np.array(c['position'])-translation)).tolist()

@@ -1,0 +1,15 @@
+{
+  "model": "Orbbec DaBai DC1",
+  "mount_frame": "p_link6",
+  "optical_frame": "camera_color_optical_frame",
+  "translation_m": [-0.0829814, 0.0004005, 0.0453566],
+  "quaternion_xyzw": [0.1656322, -0.1572342, 0.6893613, -0.6874769],
+  "color_width": 640,
+  "color_height": 480,
+  "depth_width": 640,
+  "depth_height": 400,
+  "fovy_deg": 60,
+  "fovy_status": "approximate; numeric CameraInfo intrinsics not found in project files",
+  "handeye_source": "/home/xubo/ros/search-grasp2/config/handeye.yaml",
+  "stream_source": "/home/xubo/桌面/she/A2_loco_github_integration_review/src/manipulation/piper_vision_grasp/config/orbbec.yaml"
+}

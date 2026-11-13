@@ -1,0 +1,14 @@
+robot_planner:
+  ros__parameters:
+    # Confirmed by a static comparison at one stationary pose:
+    # Piper SDK EndPose and URDF base_link -> link6 agree to display precision.
+    base_frame: base_link
+    planning_group: arm
+    end_effector_link: link6
+    # Measured physical grasp center for original parallel gripper, link6 frame.
+    # +Z is the gripper axial direction verified by the Piper URDF.
+    tcp_calibrated: true
+    tool_translation: [0.0, 0.0, 0.105]
+    tool_quaternion: [0.0, 0.0, 0.0, 1.0]
+    planning_time_sec: 2.0
+    execute: false

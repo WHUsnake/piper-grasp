@@ -8,6 +8,7 @@ import signal
 import subprocess
 import threading
 import time
+from datetime import datetime, timezone
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlsplit, unquote
 from uuid import uuid4
@@ -16,19 +17,33 @@ ROOT=Path(__file__).resolve().parent
 STATIC=ROOT/'site/dist'
 PYTHON=ROOT.parents[2]/'supermimic训练机械臂抓取/.venv/bin/python'
 BOUNDS={'bottle_y':(-.25,.25),'bottle_x':(.50,1.10),'table_z':(.50,1.05),'tcp_m':(.07,.13)}
-DEFAULT={'bottle_y':0.,'bottle_x':.72,'table_z':.76,'tcp_m':.095}
+TARGET_KINDS=('bottle','apple','orange','egg','can','cup','round_proxy','small_carton','tissue_box','cup_inverted')
+DEFAULT={'bottle_y':0.,'bottle_x':.72,'table_z':.76,'tcp_m':.095,'target_kind':'bottle','place_after_grasp':False,'multi_objects':False,'selected_pixel_u':-1,'selected_pixel_v':-1}
 
 
 def validate_parameters(value):
-    if not isinstance(value,dict) or set(value)-set(BOUNDS) or not {'bottle_x','table_z','tcp_m'}<=set(value):
-        raise ValueError('必须提供水瓶前后距离、桌高和 TCP；左右位置可选')
+    if not isinstance(value,dict) or set(value)-set(BOUNDS)-{'target_kind','place_after_grasp','multi_objects','selected_pixel_u','selected_pixel_v'} or not {'bottle_x','table_z','tcp_m'}<=set(value):
+        raise ValueError('必须提供目标前后距离、桌高和 TCP；左右位置可选')
     value=dict(DEFAULT,**value)
+    if value['target_kind'] not in TARGET_KINDS:raise ValueError('未知目标类型')
+    if not isinstance(value['place_after_grasp'],bool):raise ValueError('放置选项必须是布尔值')
+    if not isinstance(value['multi_objects'],bool):raise ValueError('多物体选项必须是布尔值')
+    if value['multi_objects'] and value['target_kind'] not in ('bottle','apple','small_carton','can','cup'):
+        raise ValueError('多物体场景目前可选水瓶、苹果、小纸盒、易拉罐或水杯')
     result={}
     for key,(lo,hi) in BOUNDS.items():
         v=value[key]
         if isinstance(v,bool) or not isinstance(v,(int,float)) or not math.isfinite(v) or not lo<=v<=hi:
             raise ValueError(f'{key} 必须在 {lo}–{hi} 米范围内')
         result[key]=float(v)
+    result['target_kind']=value['target_kind']
+    result['place_after_grasp']=value['place_after_grasp']
+    result['multi_objects']=value['multi_objects']
+    u,v=value['selected_pixel_u'],value['selected_pixel_v']
+    if type(u) is not int or type(v) is not int or ((u,v)!=(-1,-1) and not (0<=u<640 and 0<=v<480)):
+        raise ValueError('DC1 点选位置必须在 640×480 图像内')
+    result['selected_pixel_u'],result['selected_pixel_v']=u,v
+    if result['multi_objects'] and u<0:raise ValueError('请先在 DC1 预览图中点选要抓的物体')
     return result
 
 
@@ -67,10 +82,21 @@ class Experiments:
             job=dict(self.job) if self.job else None
             if job and job['status']=='running':
                 path=ROOT/'runs'/job['id']/'progress.json'
-                try:job['stage']=json.loads(path.read_text())['stage']
+                try:
+                    if job['stage']=='exporting':raise OSError('导出阶段以服务端状态为准')
+                    stage=json.loads(path.read_text())['stage']
+                    if stage!=job['stage']:
+                        self.job['stage']=stage
+                        self.job['stage_started_at']=datetime.fromtimestamp(path.stat().st_mtime,timezone.utc).isoformat()
+                    job['stage']=stage
+                    job['stage_started_at']=self.job['stage_started_at']
                 except (OSError,ValueError):pass
                 job['elapsed_sec']=round(time.monotonic()-job.pop('_started',time.monotonic()),1)
-            if job:job.pop('_started',None)
+                job['stage_elapsed_sec']=round(max(0,time.time()-datetime.fromisoformat(job['stage_started_at']).timestamp()),1)
+            if job:
+                if job.get('finished_at'):
+                    job['elapsed_sec']=round(datetime.fromisoformat(job['finished_at']).timestamp()-datetime.fromisoformat(job['started_at']).timestamp(),1)
+                job.pop('_started',None)
             return {'current':dict(self.current),'job':job,'defaults':DEFAULT,'bounds':BOUNDS,'backend':'ros2_moveit'}
 
     def start(self,parameters):
@@ -80,7 +106,8 @@ class Experiments:
             ident=uuid4().hex;folder=ROOT/'runs'/ident;folder.mkdir(parents=True)
             (folder/'request.json').write_text(json.dumps(parameters,indent=2))
             self.cancelled.clear()
-            self.job=dict(id=ident,status='running',stage='building',parameters=parameters,_started=time.monotonic(),log_url=f'/runs/{ident}/run.log')
+            started=datetime.now(timezone.utc).isoformat()
+            self.job=dict(id=ident,status='running',stage='building',parameters=parameters,_started=time.monotonic(),started_at=started,stage_started_at=started,log_url=f'/runs/{ident}/run.log')
             threading.Thread(target=self.run,args=(ident,parameters,folder),daemon=True).start()
             return self.snapshot()
 
@@ -108,9 +135,12 @@ class Experiments:
     def run(self,ident,parameters,folder):
         try:
             with (folder/'run.log').open('w') as log:
-                self.command([ROOT.parent/'ros_pipeline/run.sh','--output',folder,'--bottle-x',parameters['bottle_x'],
-                              '--bottle-y',parameters['bottle_y'],'--table-z',parameters['table_z'],'--tcp-m',parameters['tcp_m']],folder,log)
-                with self.lock:self.job['stage']='exporting'
+                self.command([ROOT.parent/'ros_pipeline/run.sh','--output',folder,'--target-kind',parameters['target_kind'],'--bottle-x',parameters['bottle_x'],
+                              '--bottle-y',parameters['bottle_y'],'--table-z',parameters['table_z'],'--tcp-m',parameters['tcp_m'],
+                              '--selected-pixel-u',parameters['selected_pixel_u'],'--selected-pixel-v',parameters['selected_pixel_v'],
+                              *(['--multi-objects'] if parameters['multi_objects'] else []),
+                              *(['--place-after-grasp'] if parameters['place_after_grasp'] else [])],folder,log)
+                with self.lock:self.job.update(stage='exporting',stage_started_at=datetime.now(timezone.utc).isoformat())
                 self.command([PYTHON,ROOT/'export_web.py',folder,'--assets',folder/'web/assets','--skip-geometry'],folder,log)
             report=json.loads((folder/'metrics.json').read_text())
             with self.lock:
@@ -118,9 +148,10 @@ class Experiments:
                 self.current=dict(id=ident,asset_base=f'/runs/{ident}/web/assets/',parameters=parameters)
                 temp=ROOT/'current_run.tmp';temp.write_text(json.dumps(self.current));temp.replace(ROOT/'current_run.json')
                 self.job.update(status='done',stage='done',success=report['success'],asset_base=self.current['asset_base'],
+                                finished_at=datetime.now(timezone.utc).isoformat(),
                                 message='物理抓取验证通过' if report['success'] else report.get('failure_reason','抓取未通过抬升/接触保持判据'))
         except Exception as exc:
-            with self.lock:self.job.update(status='cancelled' if self.cancelled.is_set() else 'failed',message=str(exc))
+            with self.lock:self.job.update(status='cancelled' if self.cancelled.is_set() else 'failed',message=str(exc),finished_at=datetime.now(timezone.utc).isoformat())
 
     def cancel(self,ident):
         with self.lock:
@@ -155,11 +186,24 @@ class Handler(SimpleHTTPRequestHandler):
             if not 0<length<=2048:raise ValueError('请求大小无效')
             body=json.loads(self.rfile.read(length))
             path=urlsplit(self.path).path
-            if path=='/api/run':self.json_response(self.server.experiments.start(body),202)
+            if path=='/api/preview':
+                proposed=dict(body,selected_pixel_u=0,selected_pixel_v=0)
+                parameters=validate_parameters(proposed)
+                if not parameters['multi_objects']:raise ValueError('预览仅用于多物体场景')
+                ident='preview_'+uuid4().hex;folder=ROOT/'runs'/ident;folder.mkdir(parents=True)
+                command=[str(PYTHON),str(ROOT/'preview_scene.py'),'--output',str(folder),
+                         '--bottle-x',str(parameters['bottle_x']),'--bottle-y',str(parameters['bottle_y']),
+                         '--table-z',str(parameters['table_z']),'--tcp-m',str(parameters['tcp_m']),
+                         '--target-kind',parameters['target_kind']]
+                subprocess.run(command,cwd=ROOT,check=True,timeout=45,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+                objects=json.loads((folder/'objects.json').read_text())
+                self.json_response({'image_url':f'/runs/{ident}/camera_rgb.png','selection_url':f'/runs/{ident}/selection_ids.png','parameters':parameters,'objects':objects})
+            elif path=='/api/run':self.json_response(self.server.experiments.start(body),202)
             elif path=='/api/cancel':self.json_response(self.server.experiments.cancel(body.get('id')))
             else:self.json_response({'error':'未知接口'},404)
         except ValueError as exc:self.json_response({'error':str(exc)},400)
         except RuntimeError as exc:self.json_response({'error':str(exc)},409)
+        except (subprocess.CalledProcessError,subprocess.TimeoutExpired):self.json_response({'error':'DC1 场景预览生成失败，请检查物体是否在视野和桌面范围内'},500)
 
     def translate_path(self,path):
         path=unquote(urlsplit(path).path)

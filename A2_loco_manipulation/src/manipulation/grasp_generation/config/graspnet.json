@@ -1,11 +1,11 @@
 {
-  "worker_python": "/home/xubo/桌面/she/piper graspnet/search-grasp2/.venv-graspnet/bin/python",
+  "worker_python": "${GRASPNET_PYTHON}",
   "base_frame": "base_link",
   "tcp_geometry_verified": false,
   "model": {
-    "repository": "/home/xubo/桌面/she/piper graspnet/search-grasp2/external/graspnet-baseline",
+    "repository": "${GRASPNET_BASELINE}",
     "commit": "280c215129f759ed8649cb4e89fc5dfee55f4f80",
-    "checkpoint": "/home/xubo/桌面/she/piper graspnet/search-grasp2/models/graspnet/checkpoint-rs.tar",
+    "checkpoint": "${GRASPNET_CHECKPOINT}",
     "sha256": "60680087c61cba2b6791614fef1519071e294f6dcaf99b3f581bb95f7c51a868",
     "num_points": 20000
   },
