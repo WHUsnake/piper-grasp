@@ -1,0 +1,334 @@
+{
+  "schema_version": 1,
+  "source_repository": "https://github.com/WHUBaoZi/robot-lab",
+  "source_commit": "1ed97b03530d00d6a53e6e4f4f97f8a0d394e9c9",
+  "destination": "WHUsnake/piper-grasp",
+  "purpose": "Current wrist RGB-D grasp and MTC placement integration; requires pinned Robot Lab host",
+  "files": [
+    {
+      "path": "docs/grasp-place.md",
+      "sha256": "a098feb3f78e44f17d575002b7204967be3b17206f14abe6ff2f52106fa636de",
+      "overlay_to_robot_lab": false
+    },
+    {
+      "path": "grasp-source/README.md",
+      "sha256": "5d67fd8ee27e4942a92a586cb6f0636832d2469a5f84c00d65c73d9f6d0e989d",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "grasp-source/a2_source/config/robots/a2_piper/observation.json",
+      "sha256": "1832ef2984e6eacff15357f39f64f765604a5c6d2cb9ac37af03878d795f76db",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "grasp-source/a2_source/src/interfaces/ros2/grasp_msgs/CMakeLists.txt",
+      "sha256": "3eb7cf568fde5cf1517debcf090092ff503bb09375695f75e74b07e0a931c715",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "grasp-source/a2_source/src/interfaces/ros2/grasp_msgs/cmake/rosidl_adapt_interfaces_utf8.cmake",
+      "sha256": "3ccf0f0576d7c18619ea5365bdd4f7fbbb63808468389fe61596080b00f8c4ae",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "grasp-source/a2_source/src/interfaces/ros2/grasp_msgs/msg/BoundTargetCloud.msg",
+      "sha256": "e0bcfe6769b78820a9782039fe2e3a0ee44f5b9e5edcac2a4df8b04dc079cf7d",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "grasp-source/a2_source/src/interfaces/ros2/grasp_msgs/msg/DetectedObject.msg",
+      "sha256": "4060f272cfadf02c48c0abb16baa16345c44da8fa8f6660fc89b399ce8e99792",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "grasp-source/a2_source/src/interfaces/ros2/grasp_msgs/msg/GraspCandidate.msg",
+      "sha256": "8a895d18d32455bb4affa34b7bd61762fc2ae30cc61515257bcd39306f6ef52a",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "grasp-source/a2_source/src/interfaces/ros2/grasp_msgs/msg/GraspCandidateArray.msg",
+      "sha256": "44094d21ae54dfd4b8a94eca0652f1280bf280024e237f9b23a03d96d1ecdf7e",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "grasp-source/a2_source/src/interfaces/ros2/grasp_msgs/msg/SelectedGrasp.msg",
+      "sha256": "cd8c1b9c99c831464728c5ecb9d994947e53610f417bf1dc3fbb948bb265b9d9",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "grasp-source/a2_source/src/interfaces/ros2/grasp_msgs/package.xml",
+      "sha256": "5efc1dfb0cd5c51d8d99e47c7ca8b8900cc174cd706ff678c77347b96e7c7c5e",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "grasp-source/a2_source/src/manipulation/grasp_generation/config/graspnet.json",
+      "sha256": "c2e6f2bde9d40d0b740f27650ddbbb5ae16569a139982fb13322a7cabec9ceec",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "grasp-source/a2_source/src/manipulation/grasp_generation/grasp_generation/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "grasp-source/a2_source/src/manipulation/grasp_generation/grasp_generation/geometry.py",
+      "sha256": "5315b73c20b2aebb6201e35fa06398510a7465882c9c5be994824fd09b60d58e",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "grasp-source/a2_source/src/manipulation/grasp_generation/grasp_generation/graspnet_backend.py",
+      "sha256": "17a2f2c37fdb690177f9e257abde028a2accbfb65035b072bb76995d9d74a623",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "grasp-source/a2_source/src/manipulation/grasp_generation/grasp_generation/node.py",
+      "sha256": "07788e280d393ce6fad15e429916002d37b5f5a3bb9abcb0595af3ecb7a4278d",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "grasp-source/a2_source/src/manipulation/grasp_generation/grasp_generation/refinement.py",
+      "sha256": "af9520f8c7f3f2b3435d5cf38e64f55ac97f23a75010954cb81bfc6285e81965",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "grasp-source/a2_source/src/manipulation/grasp_generation/grasp_generation/worker.py",
+      "sha256": "ad7dfeb451d1183eebb9236b5e4be7785b21e6dcf23a29c2461e50eee9ca2faf",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "grasp-source/a2_source/src/manipulation/grasp_generation/grasp_generation/worker_client.py",
+      "sha256": "68a56b08922f4934de287afd2ecedb3d497465a518001f79e8a7a873e2d21f39",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "grasp-source/a2_source/src/manipulation/grasp_generation/package.xml",
+      "sha256": "ba62fe8b7852aacb2e7c6a0ade2e9d29bb6e71a9248c230ccc4d045e8c63e9cc",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "grasp-source/a2_source/src/manipulation/grasp_generation/resource/grasp_generation",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "grasp-source/a2_source/src/manipulation/grasp_generation/setup.cfg",
+      "sha256": "7f77b86907fb46f88b4b028826f01a3d70dc307da8eaec8d68674af3c6003fe1",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "grasp-source/a2_source/src/manipulation/grasp_generation/setup.py",
+      "sha256": "83f1d9700be7bef899930f263743753b93338a7a83a01c23c581e04f775ebe6b",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "grasp-source/a2_source/src/manipulation/robot_planner/package.xml",
+      "sha256": "cb267bb2ba837a918cd79358074ce9f2646f0524e70df00da79ec21663541741",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "grasp-source/a2_source/src/manipulation/robot_planner/resource/robot_planner",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "grasp-source/a2_source/src/manipulation/robot_planner/robot_planner/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "grasp-source/a2_source/src/manipulation/robot_planner/robot_planner/full_planning.py",
+      "sha256": "e392d72d423033ea7c7ccd71af18e7eda785bf14a41e401e1e11ff78b1071eb7",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "grasp-source/a2_source/src/manipulation/robot_planner/robot_planner/node.py",
+      "sha256": "34aa1b3b1f369283d5188b15cfdd847d73c690659b704bbf9c0f3ecf430e595e",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "grasp-source/a2_source/src/manipulation/robot_planner/setup.cfg",
+      "sha256": "5c89e7012990fecdaca892a8c80d8021e51d5616bb13a8d8a6ab57e1175e97a9",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "grasp-source/a2_source/src/manipulation/robot_planner/setup.py",
+      "sha256": "df8bed5d78fbe7ebce57fa400d26727cbc76db0634fe64bb5810c17e5d598370",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "grasp-source/a2_source/src/manipulation/task_executor/package.xml",
+      "sha256": "adb0294e9535f45615140c14872b6449e53f8c78e8db29ecbc2cf507896effc1",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "grasp-source/a2_source/src/manipulation/task_executor/resource/task_executor",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "grasp-source/a2_source/src/manipulation/task_executor/setup.cfg",
+      "sha256": "76d39826b3465d1a8fb898eb1e054d0a0fc543d4eb689d838f8f8f493f873847",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "grasp-source/a2_source/src/manipulation/task_executor/setup.py",
+      "sha256": "8c2a2773ba7c6bac221356276880f67526dc1e7bcbbeb41c3de6aaf8ee2433fe",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "grasp-source/a2_source/src/manipulation/task_executor/task_executor/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "grasp-source/a2_source/src/manipulation/task_executor/task_executor/node.py",
+      "sha256": "464755e7900215ff86494f428c4db38dc9342b411b23f3d52d412e3b104b472d",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "grasp-source/a2_source/src/manipulation/task_executor/task_executor/simulation_execution.py",
+      "sha256": "dfad70785bbf70c5ed32d67e7c9b6b4c78bfd6cc9d0b6d7dd5399fd78cdc2623",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "grasp-source/a2_source/src/perception/perception_node/package.xml",
+      "sha256": "6061c6d702125e5066605d995287331faddf67cd22106de0590aeee17fca3f9a",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "grasp-source/a2_source/src/perception/perception_node/perception_node/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "grasp-source/a2_source/src/perception/perception_node/perception_node/depth_target.py",
+      "sha256": "ecec348bad59d1489d2edcc9d097cf43c3e545b5f4bc061e4e7cf8d9a56d6a36",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "grasp-source/a2_source/src/perception/perception_node/perception_node/geometry.py",
+      "sha256": "459c4a553facdb759f7737b79c0fbdcfef3d915178d8270de9c243b1fe800ff5",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "grasp-source/a2_source/src/perception/perception_node/perception_node/node.py",
+      "sha256": "063d235064b63b32e2a2e793844b936426ec0220f39cfeef17e7bb4c9616ad15",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "grasp-source/a2_source/src/perception/perception_node/perception_node/segment_worker.py",
+      "sha256": "9730038b728ddabe59519e5495dc26a1e98c940c332e83ebeea974e84321cf80",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "grasp-source/a2_source/src/perception/perception_node/resource/perception_node",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "grasp-source/a2_source/src/perception/perception_node/setup.cfg",
+      "sha256": "846bcebc182212cd6a768d185554ec3dfb1f0ef6e2f80907908cd0a509d8e36e",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "grasp-source/a2_source/src/perception/perception_node/setup.py",
+      "sha256": "dc8ede428a1b007cfaf4908a6cf85abd3a7319b302dbdf6fdc58d639b47d7886",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "grasp-source/manifest.json",
+      "sha256": "01ce50abac64d32b47f2b0c80fad1ce06e33711563df83421adfe500b9a9baf7",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "integration/integration/arm_trajectory.py",
+      "sha256": "b6bfa9b9681a7261e0d8d5ff8855a0f3a23ff66849dd2d03f54853b571bbc450",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "integration/integration/go2.py",
+      "sha256": "af023d5358a91c20a7d1feffedde160e5285f8f1421bbf5116578a9f7bfd30aa",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "integration/integration/go2_grasp.py",
+      "sha256": "ecd7f6bf1ba3efa6f1e86b1a64e402af3a041f2bf825452ae7c2695933fa1462",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "integration/integration/go2_grasp_ros.py",
+      "sha256": "2f5b252795e1a7e4dd89a050b0422a723f4f8c0ee4bc6e49ba8d0df04dff13b6",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "integration/integration/go2_piper.py",
+      "sha256": "937fe8ccc812494c237323c1a8d3b2b9ab57084c9b242cf973653767b0b8ac37",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "integration/integration/paths.py",
+      "sha256": "207acaf1649cc177a72e5886780ad04db51ea6437b18dcee636987fff559eb47",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "integration/integration/rpc.py",
+      "sha256": "c7a7e752bb7b21598fe90f140c8ee9cd157cde17c0c2b077d0471ac10f44aa0c",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "integration/integration/static/go2/app.js",
+      "sha256": "764b2bb5cf81700b879770428f24bfb3d8324fb4eef08b21a0258476c75bf9a7",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "integration/integration/static/go2/grasp.js",
+      "sha256": "0cab168c0f1c4992ef886db696f49c1fcadbbc5d9eeadf81178d9417f827ab91",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "integration/integration/static/go2/index.html",
+      "sha256": "8b03c735152f1520de47f30ac456089f3642c9b8cd48be2bf4449ec0e65e2fdf",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "integration/integration/static/go2/style.css",
+      "sha256": "8878c8fd84c31286c12bf903a2a7abc3cb7b21f24bc5e851f8a7d0a6eab71ea8",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "integration/integration/viewer.py",
+      "sha256": "734c28c6f429acde04f1110fc88083b4faae8d37c26df125a39e83ebe1d97df5",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "integration/mtc_place/CMakeLists.txt",
+      "sha256": "882cc27124ab6f5c284bb1aeef07340d4ea793abcfcad7902f816f53e6b93c88",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "integration/mtc_place/package.xml",
+      "sha256": "b652f90eae579f122d59a942ff6ee6805256dbdf790940bc7f701c569c2eb37f",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "integration/mtc_place/src/place.cpp",
+      "sha256": "b28e69d8232b514ddb9d8e792c6cf6ed8f13b917b5c2d2c4c24a5b3a0c4b06de",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "integration/requirements-go2-preview.txt",
+      "sha256": "f199839a3d1e0895ff500730c05234d12be15db85174b576f4a76470e1af0a31",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "lab/go2_grasp.py",
+      "sha256": "005841ecd505c83c563a0a2e0afccc6b708d7a8d147708f959f66a0fa315125e",
+      "overlay_to_robot_lab": true
+    },
+    {
+      "path": "profiles/hssd-go2-piper.json",
+      "sha256": "0474910a942c8a7b45bc635f1fdc07846ce014aaee672e8d4ad8495f05cd7eaf",
+      "overlay_to_robot_lab": true
+    }
+  ]
+}

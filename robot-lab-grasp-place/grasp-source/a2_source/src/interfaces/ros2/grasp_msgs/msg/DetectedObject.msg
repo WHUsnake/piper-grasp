@@ -1,0 +1,6 @@
+string class_name
+float32 confidence
+int32 instance_id
+geometry_msgs/Pose pose_camera
+geometry_msgs/Vector3 dimensions_m
+sensor_msgs/PointCloud2 point_cloud

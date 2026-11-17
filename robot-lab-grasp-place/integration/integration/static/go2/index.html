@@ -1,0 +1,33 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Robot Lab · 三卧场景与 Go2</title><link rel="stylesheet" href="style.css"><script type="importmap">{"imports":{"three":"/vendor/build/three.module.js","three/addons/":"/vendor/examples/jsm/"}}</script></head><body>
+<div id="viewport" aria-label="HSSD 室内三维场景"></div>
+<header><div class="brand"><span class="brandmark">⌂</span><div><h1>Robot Lab <span>/ Go2</span></h1><p>HSSD / PARTNR · MoE-CTS 实时控制</p></div></div><span class="local"><i></i>本机 MuJoCo 4.0</span></header>
+<aside class="scene-card panel"><div class="eyebrow">SCENE / 107734479</div><h2>三卧一卫 · 家庭场景</h2><p class="muted">三卧一卫一厨一客厅 · 约150 m²<br>另有家庭起居区、洗衣间与储物空间</p><div class="divider"></div><label class="switch-row"><span>显示房顶</span><input id="roof" type="checkbox"><span class="switch"></span></label><label class="switch-row"><span>低墙剖面</span><input id="cutaway" type="checkbox"><span class="switch"></span></label><label class="switch-row"><span>房间名称</span><input id="roomLabels" type="checkbox" checked><span class="switch"></span></label><div class="divider"></div><div class="eyebrow">观察视角</div><div class="views"><button id="whole" class="selected">全屋</button><button id="follow">跟随 Go2</button><button id="top">俯视</button></div><button id="bottleView" class="quiet" hidden>查看桌上瓶子</button><p class="hint">拖动旋转 · 滚轮缩放<br>右键拖动平移<br>家具暂未接入点击开合</p></aside>
+<aside class="metrics panel"><div class="verified">● 实时 MuJoCo 控制</div><h2>三卧一卫</h2><p>使用方向键控制 Go2；放开按键停止移动。</p><div class="badge">MoE-CTS · 82,500 次迭代</div><p class="tiny">家具保持初始状态，尚未接入开合与抓取。</p><a class="task-link" href="tasks.html" target="_blank" rel="noopener">查看这个场景的任务 ↗</a></aside>
+<aside id="graspPanel" class="grasp-card panel" hidden>
+<div id="testSurfaces" hidden><label for="testSurface">抓放测试桌面（6 处）</label><select id="testSurface" aria-label="选择测试桌面"></select><button id="testSurfaceView" class="quiet">定位查看桌面</button><p id="testSurfaceInfo" class="tiny"></p><p class="tiny">只切换观察视角，不移动机器人。请手动走到桌边，用腕部 RGB-D 选瓶或空白桌面。</p></div>
+<details open><summary><span class="eyebrow">GRASP / RGB-D</span><strong id="graspModeTitle">点选抓取目标</strong></summary>
+<p id="graspModeHint" class="tiny">仅仿真 · 点击 RGB 中的瓶子冻结选点；不会自动移动机械臂。</p>
+<div class="grasp-actions secondary recording-actions"><button id="screenRecordStart">开始录屏</button><button id="screenRecordStop" disabled>停止并保存</button></div>
+<p id="screenRecordStatus" class="tiny" role="status" aria-live="polite">录制三维场景与抓取面板；开始时请选择当前浏览器窗口或屏幕。</p>
+<div class="grasp-actions"><button id="armZero" disabled>机械臂零位</button><button id="armObservation" disabled>观察姿态</button></div>
+<p id="observationDescription" class="tiny">零位：六轴 0°。正在读取当前服务的观察姿态；夹爪保持不变。</p>
+<p id="armPoseFeedback" class="tiny">关节反馈连接中…</p>
+<dialog id="armPoseConfirm"><h3 id="armPoseTitle">确认切换姿态</h3><p>仅控制仿真机械臂，底盘须停稳，夹爪保持不变。将检查路径碰撞并缓慢运动；底盘超限会停止。切换后须重新采集 RGB-D、选点和预览。</p><div class="grasp-actions"><button id="armPoseCancel">取消</button><button id="armPoseExecute" class="danger">确认切换</button></div></dialog>
+<div class="grasp-toolbar"><select id="graspCamera" aria-label="抓取相机"><option value="wrist_rgbd">link6 腕部 RGB-D · 选点</option><option value="body_rgbd">Go2 机身 RGB · 仅观察</option></select><button id="rgbdRefresh">刷新画面</button><label><input id="rgbdLive" type="checkbox" checked>实时</label></div>
+<div class="rgbd-grid"><figure><figcaption>RGB 彩色 · 点击选点</figcaption><canvas id="rgbCanvas" width="640" height="480" aria-label="RGB 图像，点击选择目标" tabindex="0"></canvas></figure><figure><figcaption>Depth 深度 · 0.1–3 m</figcaption><canvas id="depthCanvas" width="640" height="480" aria-label="与RGB配准的深度图"></canvas></figure></div>
+<div class="grasp-selection"><strong id="graspPixel">未选择目标</strong><span id="graspDepth">深度：—</span><span id="graspStamp">等待 RGB-D</span></div>
+<div class="grasp-actions"><button id="graspPreview" disabled>仅预览规划</button><button id="graspRun" class="danger" disabled>规划并执行抓取</button></div>
+<div class="grasp-actions secondary"><button id="graspPlaceSelect" disabled>选择放置点 · 刷新画面</button><button id="graspPlace" disabled>执行放置</button></div>
+<p class="tiny">持物后用腕部 RGB-D 点击空白桌面；系统检查 9 cm 直径的支撑区域，保持瓶体直立、小步靠近，留小间隙缓慢释放并回零。机身 RGB 仅供观察；几何到位不等于力传感器确认接触。</p>
+<div class="grasp-actions secondary"><button id="graspAbort" disabled>停止抓取（不张爪）</button><button id="graspRelease" disabled>交还行走控制</button></div>
+<div class="grasp-actions secondary"><button id="graspRecoverFault" disabled>处理故障并继续</button><button id="graspRestore" disabled>恢复初始状态</button></div>
+<p class="tiny">恢复会结束当前抓取占用，将机器人和桌上物体恢复到场景初始位置；操作前会保存现场快照。运行中的任务须先停止。按钮置灰时需启动含此功能的预览服务。</p>
+<p id="graspStatus" class="grasp-status" role="status" aria-live="polite">正在连接相机…</p><p id="graspEvidence" class="tiny"></p>
+<details class="grasp-diagnostics"><summary>运行日志 / 证据目录</summary><pre id="graspLog">尚无任务</pre></details>
+<p class="tiny">先将机器人停在目标可见、臂可达的位置。执行任务会在同一次运行中完成感知、规划与抓取；预览可选。灰度越亮越近。旧画面、无效深度或视角变化会拒绝任务。</p>
+</details></aside><script type="module" src="grasp.js"></script>
+<div id="roomPins"></div><div id="label" class="robot-label">Go2 <span>实时物理</span></div>
+<div id="drivePad" class="drive-pad panel"><span>按住移动 · 松开停止</span><div class="pad-grid"><button data-drive="ArrowUp" aria-label="按住向前走">↑</button><button data-drive="ArrowLeft" aria-label="按住向左转">←</button><button data-drive="ArrowDown" aria-label="按住向后走">↓</button><button data-drive="ArrowRight" aria-label="按住向右转">→</button></div></div>
+<section class="playback panel"><div class="control-top"><strong class="live-mode">实时控制</strong><span id="modeHint">按住方向键移动，放开即停步</span><span id="liveState">正在连接物理进程…</span></div><div id="manualControls" class="control-bottom"><span class="speed-title">行走速度</span><div class="speed-presets"><button data-speed="0.3">慢速</button><button data-speed="0.8" class="selected">普通</button><button data-speed="1.5">快速</button></div><input id="speed" type="range" min="0.1" max="2" value="0.8" step="0.1" aria-label="机器狗速度"><strong id="speedValue">0.8 m/s</strong><button id="reset" class="quiet">重置场景 ↺</button><a class="task-link compact" href="tasks.html" target="_blank" rel="noopener">场景任务 ↗</a></div></section>
+<div class="footer-note"><span class="dot"></span><span id="status">加载场景中</span><span class="fps" id="fps"></span></div>
+<div id="loading"><div class="loading-card"><div class="loader"></div><div class="eyebrow">HSSD / PARTNR</div><h2>正在打开新的房子</h2><p id="loadText">从这台电脑读取原始模型与压缩纹理…</p><small>资产与仿真均留在本机。</small><button id="retryLoad" class="retry" hidden onclick="location.reload()">重新加载画面</button></div></div><script type="module" src="app.js"></script></body></html>

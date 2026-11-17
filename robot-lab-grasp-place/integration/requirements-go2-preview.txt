@@ -1,0 +1,10 @@
+# Separate Go2 preview environment; legacy ROS/physics pins are unchanged.
+--extra-index-url https://download.pytorch.org/whl/cpu
+mujoco==4.0.0
+numpy==2.5.4
+scipy==1.18.1
+torch==2.15.0+cpu
+Pillow==13.0.0
+
+# Build-only export of the Go2/Piper and bottle display model.
+trimesh==5.2.0

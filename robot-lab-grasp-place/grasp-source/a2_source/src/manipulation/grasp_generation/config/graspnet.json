@@ -1,0 +1,24 @@
+{
+  "worker_python": "${GRASPNET_PYTHON}",
+  "base_frame": "base_link",
+  "tcp_geometry_verified": false,
+  "model": {
+    "repository": "${GRASPNET_BASELINE}",
+    "commit": "280c215129f759ed8649cb4e89fc5dfee55f4f80",
+    "checkpoint": "${GRASPNET_CHECKPOINT}",
+    "sha256": "60680087c61cba2b6791614fef1519071e294f6dcaf99b3f581bb95f7c51a868",
+    "num_points": 20000
+  },
+  "adapter": {
+    "minimum_width_m": 0.005,
+    "maximum_width_m": 0.075,
+    "opening_clearance_m": 0.0,
+    "tcp_from_tip_m": 0.03,
+    "horizontal_tolerance_deg": 25.0,
+    "closing_tolerance_deg": 25.0,
+    "pregrasp_distance_m": 0.1,
+    "nms_translation_m": 0.01,
+    "nms_rotation_deg": 15.0,
+    "max_candidates": 12
+  }
+}

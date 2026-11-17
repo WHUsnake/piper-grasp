@@ -1,0 +1,316 @@
+{
+  "name": "hssd-go2-piper",
+  "scene": "107734479_176000442",
+  "robot": "Go2 + Piper / MoE-CTS",
+  "assets": "assets/hssd-go2-piper",
+  "port": 18769,
+  "mujoco": "4.0.0",
+  "policy_sha256": "bde5210a8114aa08bb0c611e49def1482faa1b2441673e5681374c30b935e32e",
+  "model_commit": "4e12109d1eccb1d9da2e4a35f189fabea3f13677",
+  "locomotion_ready": true,
+  "motion_ready": true,
+  "motion_mode": "moe-cts",
+  "navigation_integrated": false,
+  "manipulation_integrated": false,
+  "policy": "mixed1.3.2resume_82.5k_0.6929",
+  "arm_controller": "joint PD with gravity compensation",
+  "observation_pose_deg": [
+    0,
+    30,
+    -45,
+    0,
+    20,
+    0
+  ],
+  "arm_hold": {
+    "angles": [
+      0.003134105685384782,
+      1.8288850092793125,
+      -1.1112723746957878,
+      0.007653655709401665,
+      -0.957119905605604,
+      -0.00498858136542073
+    ],
+    "kps": [
+      40,
+      40,
+      40,
+      20,
+      20,
+      20
+    ],
+    "kds": [
+      2,
+      2,
+      2,
+      1,
+      1,
+      1
+    ],
+    "jaw_opening_m": 0.05
+  },
+  "tabletop_objects": [
+    {
+      "body_name": "tabletop_blue_bottle",
+      "name": "蓝色瓶子",
+      "shape": "bottle",
+      "position": [
+        0.82,
+        0.6,
+        0.541896508
+      ],
+      "rgba": [
+        0.08,
+        0.3,
+        0.85,
+        1.0
+      ],
+      "height_m": 0.24,
+      "mass_kg": 0.13
+    },
+    {
+      "body_name": "tabletop_orange_can",
+      "name": "橙色圆罐",
+      "shape": "cylinder",
+      "position": [
+        0.97,
+        0.6,
+        0.501896508
+      ],
+      "size": [
+        0.03,
+        0.06
+      ],
+      "rgba": [
+        0.95,
+        0.32,
+        0.06,
+        1.0
+      ],
+      "height_m": 0.12,
+      "mass_kg": 0.09
+    },
+    {
+      "body_name": "tabletop_yellow_block",
+      "name": "黄色方块",
+      "shape": "box",
+      "position": [
+        1.12,
+        0.6,
+        0.471896508
+      ],
+      "size": [
+        0.03,
+        0.03,
+        0.03
+      ],
+      "rgba": [
+        0.95,
+        0.75,
+        0.08,
+        1.0
+      ],
+      "height_m": 0.06,
+      "mass_kg": 0.08
+    },
+    {
+      "body_name": "tabletop_test_dining_bottle",
+      "name": "餐桌测试瓶",
+      "shape": "bottle",
+      "position": [
+        -6.83,
+        -4.8,
+        0.906339
+      ],
+      "rgba": [
+        0.13,
+        0.52,
+        0.82,
+        1
+      ],
+      "height_m": 0.24,
+      "mass_kg": 0.13,
+      "support_table": "object_024_09a6ff84cd15baa2d2b9b965739bdb045ee795e4",
+      "support_label": "餐桌",
+      "tabletop_height_m": 0.800339
+    },
+    {
+      "body_name": "tabletop_test_console_bottle",
+      "name": "长条桌测试瓶",
+      "shape": "bottle",
+      "position": [
+        4.35,
+        -1.84,
+        0.825999
+      ],
+      "rgba": [
+        0.1,
+        0.65,
+        0.75,
+        1
+      ],
+      "height_m": 0.24,
+      "mass_kg": 0.13,
+      "support_table": "object_033_cc916aa81e794cea2f80fd42864aa66b285334c4",
+      "support_label": "长条桌",
+      "tabletop_height_m": 0.719999
+    },
+    {
+      "body_name": "tabletop_test_side_east_bottle",
+      "name": "小边桌测试瓶",
+      "shape": "bottle",
+      "position": [
+        2.7,
+        3.47,
+        0.670983
+      ],
+      "rgba": [
+        0.25,
+        0.45,
+        0.85,
+        1
+      ],
+      "height_m": 0.24,
+      "mass_kg": 0.13,
+      "support_table": "object_039_1520f695cc022d759701159cfea0c0f75aaa92c6",
+      "support_label": "小边桌",
+      "tabletop_height_m": 0.564983
+    },
+    {
+      "body_name": "tabletop_test_family_table_bottle",
+      "name": "方形桌测试瓶",
+      "shape": "bottle",
+      "position": [
+        -6.99,
+        -2.7,
+        0.669048
+      ],
+      "rgba": [
+        0.55,
+        0.25,
+        0.85,
+        1
+      ],
+      "height_m": 0.24,
+      "mass_kg": 0.13,
+      "support_table": "object_044_fd60745108c2bae82be7fa631ac73df6fd6125ab",
+      "support_label": "方形桌",
+      "tabletop_height_m": 0.563048
+    },
+    {
+      "body_name": "tabletop_test_study_desk_bottle",
+      "name": "书桌测试瓶",
+      "shape": "bottle",
+      "position": [
+        -5.55,
+        3.72,
+        0.863906
+      ],
+      "rgba": [
+        0.1,
+        0.4,
+        0.8,
+        1
+      ],
+      "height_m": 0.24,
+      "mass_kg": 0.13,
+      "support_table": "object_055_e2470c29a511a8c9f4937a689ee1b9127974a61b",
+      "support_label": "书桌",
+      "tabletop_height_m": 0.757906
+    }
+  ],
+  "placed_bottle": {
+    "name": "客厅茶几上的瓶子",
+    "position": [
+      0.67,
+      0.6,
+      0.541896508
+    ],
+    "tabletop_height_m": 0.438896508,
+    "table_bounds_world": [
+      0.567233,
+      1.227633,
+      -0.618319,
+      0.703181
+    ],
+    "support_table": "object_015_ce9c5810fc2943f1487a73b60e163d1d56f7a5c8",
+    "support_label": "客厅中央木质茶几",
+    "height_m": 0.24,
+    "mass_kg": 0.13,
+    "placement_description": "四个物体沿靠机器人一侧桌沿排列，中心距y正方向桌边约10cm，相邻中心间距15cm"
+  },
+  "grasp_surfaces": [
+    {
+      "id": "living-coffee",
+      "name": "客厅茶几",
+      "support_table": "object_015_ce9c5810fc2943f1487a73b60e163d1d56f7a5c8",
+      "tabletop_height_m": 0.438896508,
+      "table_bounds_world": [
+        0.567233,
+        1.227633,
+        -0.618319,
+        0.703181
+      ]
+    },
+    {
+      "id": "dining",
+      "name": "餐桌",
+      "support_table": "object_024_09a6ff84cd15baa2d2b9b965739bdb045ee795e4",
+      "tabletop_height_m": 0.800339,
+      "table_bounds_world": [
+        -7.780689,
+        -6.662945,
+        -5.754768,
+        -3.92588
+      ]
+    },
+    {
+      "id": "console",
+      "name": "长条桌",
+      "support_table": "object_033_cc916aa81e794cea2f80fd42864aa66b285334c4",
+      "tabletop_height_m": 0.719999,
+      "table_bounds_world": [
+        4.045297,
+        5.139108,
+        -2.042122,
+        -1.635897
+      ]
+    },
+    {
+      "id": "side-east",
+      "name": "小边桌",
+      "support_table": "object_039_1520f695cc022d759701159cfea0c0f75aaa92c6",
+      "tabletop_height_m": 0.564983,
+      "table_bounds_world": [
+        2.570026,
+        2.9766,
+        3.271268,
+        3.677824
+      ]
+    },
+    {
+      "id": "family-table",
+      "name": "方形桌",
+      "support_table": "object_044_fd60745108c2bae82be7fa631ac73df6fd6125ab",
+      "tabletop_height_m": 0.563048,
+      "table_bounds_world": [
+        -7.329914,
+        -6.645831,
+        -2.866898,
+        -2.245286
+      ]
+    },
+    {
+      "id": "study-desk",
+      "name": "书桌",
+      "support_table": "object_055_e2470c29a511a8c9f4937a689ee1b9127974a61b",
+      "tabletop_height_m": 0.757906,
+      "table_bounds_world": [
+        -5.996102,
+        -5.196101,
+        3.558426,
+        4.75847
+      ]
+    }
+  ]
+}

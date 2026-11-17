@@ -1,0 +1,185 @@
+{
+  "schema_version": 1,
+  "purpose": "Runtime A2 grasp source snapshot used by the feature/she integration",
+  "files": [
+    {
+      "path": "a2_source/config/robots/a2_piper/observation.json",
+      "sha256": "1832ef2984e6eacff15357f39f64f765604a5c6d2cb9ac37af03878d795f76db"
+    },
+    {
+      "path": "a2_source/src/interfaces/ros2/grasp_msgs/CMakeLists.txt",
+      "sha256": "3eb7cf568fde5cf1517debcf090092ff503bb09375695f75e74b07e0a931c715"
+    },
+    {
+      "path": "a2_source/src/interfaces/ros2/grasp_msgs/cmake/rosidl_adapt_interfaces_utf8.cmake",
+      "sha256": "3ccf0f0576d7c18619ea5365bdd4f7fbbb63808468389fe61596080b00f8c4ae"
+    },
+    {
+      "path": "a2_source/src/interfaces/ros2/grasp_msgs/msg/BoundTargetCloud.msg",
+      "sha256": "e0bcfe6769b78820a9782039fe2e3a0ee44f5b9e5edcac2a4df8b04dc079cf7d"
+    },
+    {
+      "path": "a2_source/src/interfaces/ros2/grasp_msgs/msg/DetectedObject.msg",
+      "sha256": "4060f272cfadf02c48c0abb16baa16345c44da8fa8f6660fc89b399ce8e99792"
+    },
+    {
+      "path": "a2_source/src/interfaces/ros2/grasp_msgs/msg/GraspCandidate.msg",
+      "sha256": "8a895d18d32455bb4affa34b7bd61762fc2ae30cc61515257bcd39306f6ef52a"
+    },
+    {
+      "path": "a2_source/src/interfaces/ros2/grasp_msgs/msg/GraspCandidateArray.msg",
+      "sha256": "44094d21ae54dfd4b8a94eca0652f1280bf280024e237f9b23a03d96d1ecdf7e"
+    },
+    {
+      "path": "a2_source/src/interfaces/ros2/grasp_msgs/msg/SelectedGrasp.msg",
+      "sha256": "cd8c1b9c99c831464728c5ecb9d994947e53610f417bf1dc3fbb948bb265b9d9"
+    },
+    {
+      "path": "a2_source/src/interfaces/ros2/grasp_msgs/package.xml",
+      "sha256": "5efc1dfb0cd5c51d8d99e47c7ca8b8900cc174cd706ff678c77347b96e7c7c5e"
+    },
+    {
+      "path": "a2_source/src/manipulation/grasp_generation/config/graspnet.json",
+      "sha256": "c2e6f2bde9d40d0b740f27650ddbbb5ae16569a139982fb13322a7cabec9ceec"
+    },
+    {
+      "path": "a2_source/src/manipulation/grasp_generation/grasp_generation/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "a2_source/src/manipulation/grasp_generation/grasp_generation/geometry.py",
+      "sha256": "5315b73c20b2aebb6201e35fa06398510a7465882c9c5be994824fd09b60d58e"
+    },
+    {
+      "path": "a2_source/src/manipulation/grasp_generation/grasp_generation/graspnet_backend.py",
+      "sha256": "17a2f2c37fdb690177f9e257abde028a2accbfb65035b072bb76995d9d74a623"
+    },
+    {
+      "path": "a2_source/src/manipulation/grasp_generation/grasp_generation/node.py",
+      "sha256": "07788e280d393ce6fad15e429916002d37b5f5a3bb9abcb0595af3ecb7a4278d"
+    },
+    {
+      "path": "a2_source/src/manipulation/grasp_generation/grasp_generation/refinement.py",
+      "sha256": "af9520f8c7f3f2b3435d5cf38e64f55ac97f23a75010954cb81bfc6285e81965"
+    },
+    {
+      "path": "a2_source/src/manipulation/grasp_generation/grasp_generation/worker.py",
+      "sha256": "ad7dfeb451d1183eebb9236b5e4be7785b21e6dcf23a29c2461e50eee9ca2faf"
+    },
+    {
+      "path": "a2_source/src/manipulation/grasp_generation/grasp_generation/worker_client.py",
+      "sha256": "68a56b08922f4934de287afd2ecedb3d497465a518001f79e8a7a873e2d21f39"
+    },
+    {
+      "path": "a2_source/src/manipulation/grasp_generation/package.xml",
+      "sha256": "ba62fe8b7852aacb2e7c6a0ade2e9d29bb6e71a9248c230ccc4d045e8c63e9cc"
+    },
+    {
+      "path": "a2_source/src/manipulation/grasp_generation/resource/grasp_generation",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "a2_source/src/manipulation/grasp_generation/setup.cfg",
+      "sha256": "7f77b86907fb46f88b4b028826f01a3d70dc307da8eaec8d68674af3c6003fe1"
+    },
+    {
+      "path": "a2_source/src/manipulation/grasp_generation/setup.py",
+      "sha256": "83f1d9700be7bef899930f263743753b93338a7a83a01c23c581e04f775ebe6b"
+    },
+    {
+      "path": "a2_source/src/manipulation/robot_planner/package.xml",
+      "sha256": "cb267bb2ba837a918cd79358074ce9f2646f0524e70df00da79ec21663541741"
+    },
+    {
+      "path": "a2_source/src/manipulation/robot_planner/resource/robot_planner",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "a2_source/src/manipulation/robot_planner/robot_planner/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "a2_source/src/manipulation/robot_planner/robot_planner/full_planning.py",
+      "sha256": "e392d72d423033ea7c7ccd71af18e7eda785bf14a41e401e1e11ff78b1071eb7"
+    },
+    {
+      "path": "a2_source/src/manipulation/robot_planner/robot_planner/node.py",
+      "sha256": "34aa1b3b1f369283d5188b15cfdd847d73c690659b704bbf9c0f3ecf430e595e"
+    },
+    {
+      "path": "a2_source/src/manipulation/robot_planner/setup.cfg",
+      "sha256": "5c89e7012990fecdaca892a8c80d8021e51d5616bb13a8d8a6ab57e1175e97a9"
+    },
+    {
+      "path": "a2_source/src/manipulation/robot_planner/setup.py",
+      "sha256": "df8bed5d78fbe7ebce57fa400d26727cbc76db0634fe64bb5810c17e5d598370"
+    },
+    {
+      "path": "a2_source/src/manipulation/task_executor/package.xml",
+      "sha256": "adb0294e9535f45615140c14872b6449e53f8c78e8db29ecbc2cf507896effc1"
+    },
+    {
+      "path": "a2_source/src/manipulation/task_executor/resource/task_executor",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "a2_source/src/manipulation/task_executor/setup.cfg",
+      "sha256": "76d39826b3465d1a8fb898eb1e054d0a0fc543d4eb689d838f8f8f493f873847"
+    },
+    {
+      "path": "a2_source/src/manipulation/task_executor/setup.py",
+      "sha256": "8c2a2773ba7c6bac221356276880f67526dc1e7bcbbeb41c3de6aaf8ee2433fe"
+    },
+    {
+      "path": "a2_source/src/manipulation/task_executor/task_executor/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "a2_source/src/manipulation/task_executor/task_executor/node.py",
+      "sha256": "464755e7900215ff86494f428c4db38dc9342b411b23f3d52d412e3b104b472d"
+    },
+    {
+      "path": "a2_source/src/manipulation/task_executor/task_executor/simulation_execution.py",
+      "sha256": "dfad70785bbf70c5ed32d67e7c9b6b4c78bfd6cc9d0b6d7dd5399fd78cdc2623"
+    },
+    {
+      "path": "a2_source/src/perception/perception_node/package.xml",
+      "sha256": "6061c6d702125e5066605d995287331faddf67cd22106de0590aeee17fca3f9a"
+    },
+    {
+      "path": "a2_source/src/perception/perception_node/perception_node/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "a2_source/src/perception/perception_node/perception_node/depth_target.py",
+      "sha256": "ecec348bad59d1489d2edcc9d097cf43c3e545b5f4bc061e4e7cf8d9a56d6a36"
+    },
+    {
+      "path": "a2_source/src/perception/perception_node/perception_node/geometry.py",
+      "sha256": "459c4a553facdb759f7737b79c0fbdcfef3d915178d8270de9c243b1fe800ff5"
+    },
+    {
+      "path": "a2_source/src/perception/perception_node/perception_node/node.py",
+      "sha256": "063d235064b63b32e2a2e793844b936426ec0220f39cfeef17e7bb4c9616ad15"
+    },
+    {
+      "path": "a2_source/src/perception/perception_node/perception_node/segment_worker.py",
+      "sha256": "9730038b728ddabe59519e5495dc26a1e98c940c332e83ebeea974e84321cf80"
+    },
+    {
+      "path": "a2_source/src/perception/perception_node/resource/perception_node",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "a2_source/src/perception/perception_node/setup.cfg",
+      "sha256": "846bcebc182212cd6a768d185554ec3dfb1f0ef6e2f80907908cd0a509d8e36e"
+    },
+    {
+      "path": "a2_source/src/perception/perception_node/setup.py",
+      "sha256": "dc8ede428a1b007cfaf4908a6cf85abd3a7319b302dbdf6fdc58d639b47d7886"
+    }
+  ],
+  "upstream_repository": "https://github.com/WHUBaoZi/A2_loco_manipulation.git",
+  "upstream_commit": "fb7f2b15b826612c3885c782acfc660627f8c1a3",
+  "upstream_relation": "Local modified snapshot; upstream commit alone does not reproduce these files"
+}
