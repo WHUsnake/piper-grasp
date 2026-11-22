@@ -4,6 +4,10 @@
 
 [robot-lab-grasp-place](robot-lab-grasp-place/README.md) 保存同一 Lab 链路的两种候选生成方法：[GraspNet](robot-lab-grasp-place/methods/graspnet/README.md) 和 [GraspGenX](robot-lab-grasp-place/methods/graspgenx/README.md)。两者共用腕部 RGB-D 选点、11 cm TCP、MoveIt 抓取执行、MTC 放置、网页状态机及 [Agent 接口](robot-lab-grasp-place/docs/agent-api.md)。此目录是固定 Robot Lab 宿主的源码 overlay；旧 A2 固定站立平台仍按下文独立使用。
 
+**验收范围**：固定 MuJoCo 场景独立重置 5 轮／方法，GraspNet 与 GraspGenX 都完成 5/5 次抓起、持稳、放置、释放和回零；放置初选点分别有 2/5 和 4/5 轮被拒绝，重选后才成功。完整记录见[验证说明](robot-lab-grasp-place/docs/validation.md)。这是单场景仿真观测通过率，不能推断真机成功率达到 80%。
+
+**真机接入前必读**：当前抓取确认、掉落监测和放置准入读取 MuJoCo 瓶子的精确高度与位置，真实夹爪没有这些数据。真实透明瓶和夹爪遮挡可能使 RGB 仍能看到瓶子、深度却只剩少量有效点；现有抓取入口要求至少 100 个目标深度像素、6 cm 可见高度和选点处有效深度，可能在模型运行前直接拒绝。请先读[真机迁移边界](robot-lab-grasp-place/README.md#真机迁移边界)，不要把仿真记录当成真实抓取验收。
+
 ---
 
 从已验证的 piper graspnet 保存版本整理。包含抓取ROS源码、GraspNet模型与基线源码、MuJoCo仿真、网页服务器、A2/PiPER模型资源和成功回放。大型Python虚拟环境、构建缓存和完整历史运行目录保留在本地保存版本。
