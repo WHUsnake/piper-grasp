@@ -3,16 +3,89 @@ import base64
 import json
 import os
 from pathlib import Path
+import re
 import signal
 import subprocess
 import sys
 import threading
 import time
+import xml.etree.ElementTree as ET
 
 import numpy as np
 from scipy.spatial.transform import Rotation
 
 from integration.rpc import call
+
+
+def tcp_geometry_audit(description, tcp_m):
+    """Check the configured link6 TCP against the exported simulation geometry."""
+    robot = ET.fromstring(description)
+    finger_origins = {}
+    for joint in robot.findall('joint'):
+        child = joint.find('child')
+        origin = joint.find('origin')
+        if child is None or origin is None or child.get('link') not in ('p_link7', 'p_link8'):
+            continue
+        xyz = np.fromstring(origin.get('xyz', ''), sep=' ')
+        if xyz.size == 3:
+            finger_origins[child.get('link')] = xyz.tolist()
+    from grasp_generation.refinement import PAD_CENTER_FROM_LINK6_M, FINGER_TIP_FROM_LINK6_M
+    finger_tip_m = float(FINGER_TIP_FROM_LINK6_M)
+    pad_center_m = float(PAD_CENTER_FROM_LINK6_M)
+    report = {
+        'frame': 'link6', 'configured_tcp_m': float(tcp_m),
+        'model_finger_joint_origins_m': finger_origins,
+        'algorithm_pad_center_m': pad_center_m,
+        'algorithm_finger_tip_m': finger_tip_m,
+        'tcp_minus_pad_center_m': float(tcp_m-pad_center_m),
+        'finger_tip_minus_tcp_m': float(finger_tip_m-tcp_m),
+        'simulation_geometry_consistent': bool(
+            len(finger_origins) == 2 and
+            all(abs(xyz[2]-finger_tip_m) <= .002 for xyz in finger_origins.values()) and
+            0 <= tcp_m <= finger_tip_m),
+        'hardware_tcp_calibrated': False,
+        'note': 'Simulation geometry check only; measure the real link6-to-contact transform on hardware.'
+    }
+    return report
+
+
+def summarize_screening(directory):
+    trace = directory/'grasp-screening.jsonl'
+    if not trace.is_file():
+        return
+    events = [json.loads(line) for line in trace.read_text().splitlines() if line.strip()]
+    ready = [event for event in events if event.get('status') == 'ready']
+    viable = [event for event in ready if event.get('stages', {}).get('published', 0) > 0]
+    failures = {}
+    for event in events:
+        status = event.get('status')
+        if status != 'ready':
+            failures[status] = failures.get(status, 0)+1
+    result = {'events': len(events), 'ready_frames': len(ready),
+              'frames_with_published_candidates': len(viable),
+              'status_counts_except_ready': failures,
+              'latest_ready_stages': ready[-1].get('stages') if ready else None,
+              'latest_ready_rejections': ready[-1].get('rejected') if ready else None,
+              'first_viable_stages': viable[0].get('stages') if viable else None,
+              'first_viable_pipeline_elapsed_sec': viable[0].get('pipeline_elapsed_sec') if viable else None,
+              'model_inference_sec': [event['inference_sec'] for event in ready if event.get('inference_sec') is not None],
+              'postprocess_sec': [event['postprocess_sec'] for event in ready if event.get('postprocess_sec') is not None],
+              'first_ready_pipeline_elapsed_sec': ready[0].get('pipeline_elapsed_sec') if ready else None}
+    planner_file = directory/'planner_diagnostics.json'
+    if planner_file.is_file():
+        planner = json.loads(planner_file.read_text())
+        stages, reasons = {}, {}
+        for candidate in planner.get('candidates', []):
+            stage = str(candidate.get('stage', 'unknown'))
+            status = str(candidate.get('status', 'unknown'))
+            stage_key = stage+':'+status
+            stages[stage_key] = stages.get(stage_key, 0)+1
+            if status == 'rejected':
+                reason = re.sub(r'[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?', '<value>', str(candidate.get('reason', 'unknown')))
+                reasons[reason] = reasons.get(reason, 0)+1
+        result['planner'] = {'result': planner.get('result'), 'stage_status_counts': stages,
+                             'rejection_reason_counts': reasons}
+    (directory/'grasp-screening-summary.json').write_text(json.dumps(result, indent=2, allow_nan=False))
 
 
 def executor_command(command, setup=None):
@@ -162,6 +235,8 @@ def main():
     reserved = False
     execution_started = False
     successful_hold = False
+    backend = request.get('backend', 'graspnet')
+    pipeline_started = time.monotonic()
     node = executor = None
 
     def rpc(method, **values):
@@ -307,6 +382,10 @@ def main():
             raise RuntimeError('Observed object support is not a reliable horizontal plane')
         object_bottom[2] = float(center[2]-np.dot(normal[:2], np.asarray(object_bottom[:2])-center[:2])/normal[2])
         exported = rpc('export', directory=str(directory), selected_world=segmentation['centroid_world_m'])
+        tcp_audit = tcp_geometry_audit(exported['robot_description'], request['tcp_m'])
+        write('tcp-geometry-audit.json', tcp_audit)
+        if not tcp_audit['simulation_geometry_consistent']:
+            raise RuntimeError('Configured TCP conflicts with exported simulation finger geometry; inspect tcp-geometry-audit.json')
         write('target_identity.json', {'body': exported['target_body'],
                                        'centroid_world_m': segmentation['centroid_world_m']})
         config = {'robot_description': exported['robot_description'],
@@ -335,10 +414,22 @@ def main():
         grasp['worker_python'] = request['worker_python']
         grasp['model'].update(repository=request['baseline'], checkpoint=request['checkpoint'])
         grasp['base_frame'] = 'world'
-        grasp['adapter'].update(tcp_from_tip_m=.135-request['tcp_m'], max_candidates=100)
+        grasp['adapter'].update(tcp_from_tip_m=tcp_audit['finger_tip_minus_tcp_m'], max_candidates=100)
         grasp['refinement'] = {'enabled': True, 'shape': 'upright_cylinder', 'tcp_m': request['tcp_m'],
                                'orientation_search': True, 'approach_origin_world': exported['arm_origin'],
                                'contact_height_fractions': [.5, .4, .6]}
+        from integration.paths import REPOSITORY
+        local_path = REPOSITORY/'config.local.json'
+        local = (json.loads(local_path.read_text()).get('go2_grasp') or {}) if local_path.is_file() else {}
+        backend = request.get('backend', os.environ.get('LAB_GRASP_BACKEND', local.get('backend', 'graspnet')))
+        if backend == 'graspgenx':
+            runtime = local['graspgenx']
+            grasp['worker_python'] = runtime['python']
+            grasp['worker_script'] = runtime['script']
+            grasp['model']['graspgenx_root'] = runtime['root']
+        elif backend != 'graspnet':
+            raise ValueError(f'Unknown grasp backend: {backend}')
+        grasp['backend'] = backend
         write('graspnet.json', grasp)
 
         import rclpy
@@ -364,6 +455,7 @@ def main():
                 self.had_candidates = False
                 self.error = None
                 self.closed = threading.Event()
+                self.diagnostic_lock = threading.Lock()
                 self.group = ReentrantCallbackGroup()
                 self.joints = self.create_publisher(JointState, '/joint_states', 10)
                 self.feedback = self.create_publisher(JointState, '/joint_states_feedback', 10)
@@ -403,7 +495,16 @@ def main():
             def grasp_diagnostic(self, message):
                 try:
                     diagnostic = json.loads(message.data)
-                    write('grasp_diagnostics.json', diagnostic)
+                    event = {key: diagnostic.get(key) for key in
+                             ('status', 'backend', 'acquisition_stamp', 'count', 'inference_sec',
+                              'postprocess_sec', 'rejected', 'stages')
+                             if key in diagnostic}
+                    event['received_unix_sec'] = time.time()
+                    event['pipeline_elapsed_sec'] = time.monotonic()-pipeline_started
+                    with self.diagnostic_lock:
+                        write('grasp_diagnostics.json', diagnostic)
+                        with (directory/'grasp-screening.jsonl').open('a') as trace:
+                            trace.write(json.dumps(event, allow_nan=False)+'\n')
                     status = diagnostic.get('status')
                     # TF delivery is asynchronous across DDS topics. A failed
                     # lookup invalidates that cloud, not the entire task; the
@@ -413,9 +514,9 @@ def main():
                         return
                     if (status not in ('ready', 'target_invalidated', 'published_candidates_expired') and
                             self.selected is None and not self.had_candidates):
-                        self.error = 'GraspNet candidate generation failed: '+str(status)
+                        self.error = f'{backend} candidate generation failed: {status}'
                 except (ValueError, TypeError) as error:
-                    self.error = 'Invalid GraspNet diagnostics: '+str(error)
+                    self.error = 'Invalid grasp diagnostics: '+str(error)
 
             def selection(self, message):
                 if message.session_id != owner:
@@ -609,7 +710,8 @@ def main():
         for name, binary in [('robot_state_publisher', '/opt/ros/humble/lib/robot_state_publisher/robot_state_publisher'),
                              ('move_group', '/opt/ros/humble/lib/moveit_ros_move_group/move_group')]:
             spawn(name, [binary, '--ros-args', '--params-file', directory/'moveit.yaml'])
-        ros_node('grasp_generator', 'grasp_generation.node', {'graspnet_config': str(directory/'graspnet.json')})
+        ros_node('grasp_generator', 'grasp_generation.node', {'graspnet_config': str(directory/'graspnet.json'),
+            'max_age_sec': 1.5 if backend == 'graspgenx' else .5})
         ros_node('perception', 'perception_node.node', {'segmentation_backend': 'tabletop_depth_components',
             'simulation_mode': True, 'target_session': owner, 'capture_directory': str(directory),
             'selected_pixel_u': request['pixel'][0] if request['pixel'] else -1,
@@ -627,12 +729,12 @@ def main():
             'place_after_grasp': False, 'session_id': owner,
             'tool_translation': [0., 0., request['tcp_m']]})
         wait(lambda: node.had_candidates,
-             150, 'No fresh GraspNet candidates; inspect perception/grasp_generator logs')
+             150, f'No fresh {backend} candidates; inspect perception/grasp_generator logs')
         service('/planner/preview', 150)
         wait(lambda: node.selected is not None, 5, 'Planner did not publish the selected path')
         if request['operation'] == 'preview':
             write('result.json', {'passed': True, 'operation': 'preview', 'motion_executed': False,
-                                 'pipeline': 'local_perception_GraspNet_MoveIt'})
+                                 'backend': backend, 'pipeline': 'local_perception_'+backend+'_MoveIt'})
             print('Live-world MoveIt preview passed; no arm/gripper commands sent.')
             return 0
         wait(lambda: node.candidates is not None and
@@ -721,7 +823,7 @@ def main():
         successful_hold = True
         write('result.json', {'passed': True, 'operation': 'run', 'motion_executed': True,
                              'holding': True, 'returned_to_zero': True, 'drive_enabled': True,
-                             'pipeline': 'local_perception_GraspNet_MoveIt_TaskExecutor'})
+                             'backend': backend, 'pipeline': 'local_perception_'+backend+'_MoveIt_TaskExecutor'})
         print('Grasp and held return to zero physically verified; ownership retained. No automatic release/reset.')
         return 0
     except Exception as error:
@@ -730,7 +832,8 @@ def main():
                 write('failure_feedback.json', rpc('feedback'))
             except Exception:
                 pass
-        write('result.json', {'passed': False, 'error': str(error), 'execution_requested': execution_started})
+        write('result.json', {'passed': False, 'backend': backend, 'error': str(error),
+                             'execution_requested': execution_started})
         print('ERROR: '+str(error), file=sys.stderr)
         return 1
     finally:
@@ -758,6 +861,10 @@ def main():
         if node:
             node.destroy_node()
             rclpy.shutdown()
+        try:
+            summarize_screening(directory)
+        except (OSError, ValueError) as error:
+            (directory/'grasp-screening-summary-error.txt').write_text(str(error))
         for output in logs:
             output.close()
 

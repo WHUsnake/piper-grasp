@@ -12,7 +12,10 @@ class Worker:
         env.update(PYTHONNOUSERSITE='1', OMP_NUM_THREADS='1', CUBLAS_WORKSPACE_CONFIG=':4096:8')
         # Script imports sibling package; this path contains only our ROS-free modules.
         env['PYTHONPATH'] = str(script.parent.parent)
-        self.proc = subprocess.Popen([python, '-m', 'grasp_generation.worker', config],
+        with open(config) as stream:
+            alternate = json.load(stream).get('worker_script')
+        command = [python, alternate, config] if alternate else [python, '-m', 'grasp_generation.worker', config]
+        self.proc = subprocess.Popen(command,
                                      stdin=subprocess.PIPE, stdout=subprocess.PIPE, env=env)
         self.counter = 0
         try:

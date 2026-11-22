@@ -116,7 +116,9 @@ def refine_candidates(candidates,points,tcp_m):
     output=[]
     for original in candidates:
         c=dict(original);r=np.asarray(c['rotation_world']);axis=r[:,2]
-        if axis[0]<.7:continue
+        # World +X is a scene-specific viewing direction, not a grasp
+        # constraint. The orientation search below supplies a robot-radial
+        # alternative; MoveIt checks reachability and collisions.
         old=np.asarray(c['position'])
         raw_reference=old-axis*(c['depth']-(.135-tcp_m))
         # Set the contact centre to the observed bottle middle. Preserve the

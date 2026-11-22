@@ -22,6 +22,8 @@ def launch_pipeline(settings, options, directory, log=None):
             if path.is_file() and '__pycache__' not in path.parts and path.suffix in ('.py', '.msg', '.json'):
                 hashes[str(path.relative_to(source))] = hashlib.sha256(path.read_bytes()).hexdigest()
     (directory/'source-fingerprints.json').write_text(json.dumps({'source': str(source), 'sha256': hashes}, indent=2))
+    if os.environ.get('LAB_GRASP_BACKEND'):
+        options = dict(options, backend=os.environ['LAB_GRASP_BACKEND'])
     (directory/'request.json').write_text(json.dumps(dict(settings, **options, directory=str(directory)), indent=2))
     env = dict(os.environ, GRASPNET_PYTHON=settings['worker_python'],
                GRASPNET_BASELINE=settings['baseline'], GRASPNET_CHECKPOINT=settings['checkpoint'],
@@ -514,7 +516,8 @@ class GraspPanel:
             profile = json.loads((REPOSITORY/'profiles/hssd-go2-piper.json').read_text())
             support = grasp_support(fresh, pixel, profile)
             options = dict(operation=operation, socket=identity['socket'], world_session=world['session'],
-                           camera=frame['camera'], table_height=support['tabletop_height_m'], tcp_m=.105, pixel=pixel,
+                           camera=frame['camera'], table_height=support['tabletop_height_m'],
+                           tcp_m=float(settings.get('tcp_m', .11)), pixel=pixel,
                            table_bounds_world=support['table_bounds_world'],
                            support_table=support.get('support_table'), expected_camera=expected)
             self.process = launch_pipeline(settings, options, directory, log=directory/'web.log')
@@ -1275,6 +1278,11 @@ class GraspWorld:
                     tilt = math.acos(max(-1., min(1., float((link.xmat.reshape(3, 3) @ axis)[2]))))
                     if not -.003 <= gap <= .018 or lateral > .02 or tilt > .06:
                         raise RuntimeError('Release preflight pose changed; fingers remain closed')
+                    # The last descent step may still target a lower joint pose
+                    # after its Cartesian completion condition has succeeded.
+                    # Freeze at measured joints before unloading the gripper;
+                    # release-mode Cartesian correction then holds this anchor.
+                    world.arm_target = data.qpos[world.arm_qi].copy()
                     geometry.update(release_anchor_world=link.xpos.tolist(),
                                     release_orientation_world=link.xmat.reshape(3, 3).tolist())
             self.task_phase = 'place_descending' if method == 'place_descend' else 'releasing'
@@ -1504,8 +1512,11 @@ class GraspWorld:
             self.initial_bottle = data.body(self.target_body).xpos.copy()
             return result
         if method == 'export_place_model':
-            if not self.holding or not self.owner:
-                raise RuntimeError('MTC placement model requires a held object')
+            # MTC runs twice: before release with a held object and after
+            # release with the object resting in the world. Keep the same
+            # target identity for retreat planning after the fingers open.
+            if not self.owner or not self.target_body or not (self.holding or self.place_release_active):
+                raise RuntimeError('MTC placement model requires an active placement task')
             return export_model(world, Path(request['directory']), self.workspace,
                                 selected_body=self.target_body)
         if method == 'gripper':
@@ -1752,7 +1763,19 @@ def run_pose(request_path):
         reference = Path(options['workspace'])/'sources/A2_loco_manipulation/third_party/piper_ros/src/piper_description/urdf/piper_description.urdf'
         report.update(reference_urdf=str(reference), reference_sha256=hashlib.sha256(reference.read_bytes()).hexdigest(),
                       joint_deg=angles, gripper_policy='unchanged')
-        rpc('reserve')
+        # The restored simulator needs consecutive measured base samples before
+        # it can reserve arm control. A request made immediately after startup
+        # should wait for that short settling period instead of failing a task.
+        reserve_deadline = time.monotonic()+12
+        while True:
+            try:
+                rpc('reserve')
+                break
+            except RuntimeError as error:
+                if (str(error) != 'Stop the base and wait for measured stability'
+                        or time.monotonic() >= reserve_deadline):
+                    raise
+                time.sleep(.15)
         reserved = True
         report['motion'] = rpc('preset', positions=[math.radians(value) for value in angles])
         deadline = time.monotonic()+75
@@ -1966,13 +1989,16 @@ def run_place(request_path):
             axis_local=options['axis_local'], orientation_world=plan['link6_rotation_world'],
             normal_world=options['surface']['normal_world'])
         at_bottom = wait_control()
-        phase = 'plan_retreat_and_zero'
-        rpc('task_phase', phase='planning')
-        post_paths = mtc_paths('after_release', at_bottom)
         phase = 'open_gripper'
         rpc('place_release', point_world=options['surface']['point_world'])
-        wait_control(30)
+        after_release = wait_control(30)
         released = True
+        # Opening the gripper can shift the arm under contact. Plan the
+        # retreat from the measured post-release joints, not the pre-release
+        # pose at the end of the contact descent.
+        phase = 'plan_retreat_and_zero'
+        rpc('task_phase', phase='planning')
+        post_paths = mtc_paths('after_release', after_release)
         phase = 'retreat'
         rpc('task_phase', phase='retreating')
         retreat = execute_mtc(post_paths['retreat'], 4)

@@ -56,11 +56,11 @@
     },
     {
       "path": "a2_source/src/manipulation/grasp_generation/grasp_generation/node.py",
-      "sha256": "07788e280d393ce6fad15e429916002d37b5f5a3bb9abcb0595af3ecb7a4278d"
+      "sha256": "e863d38cf1747713768db19ac3978f310d0b55951ad16ad32f4897b69b724d2c"
     },
     {
       "path": "a2_source/src/manipulation/grasp_generation/grasp_generation/refinement.py",
-      "sha256": "af9520f8c7f3f2b3435d5cf38e64f55ac97f23a75010954cb81bfc6285e81965"
+      "sha256": "434e31b57944d01ec781fd1d3fc05ce2357342b2343d41c6ee8e5bcb9e3b14cc"
     },
     {
       "path": "a2_source/src/manipulation/grasp_generation/grasp_generation/worker.py",
@@ -68,7 +68,7 @@
     },
     {
       "path": "a2_source/src/manipulation/grasp_generation/grasp_generation/worker_client.py",
-      "sha256": "68a56b08922f4934de287afd2ecedb3d497465a518001f79e8a7a873e2d21f39"
+      "sha256": "883424f726f0b579e0747f22b0ae9e44e9f83f0a36889f5d76fc6da913e01810"
     },
     {
       "path": "a2_source/src/manipulation/grasp_generation/package.xml",

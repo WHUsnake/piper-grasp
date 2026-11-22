@@ -1,11 +1,8 @@
 # PiPER GraspNet / A2 固定站立抓取仿真
 
-## 当前抓取与放置更新（2026-11-17）
+## Robot Lab 双算法抓取与放置（2026-11-23）
 
-新增 [robot-lab-grasp-place/](robot-lab-grasp-place/README.md)：当前 Robot Lab 的腕部 RGB-D
-选点抓取、持物回零、MTC 放置、小步下降／释放、撤离回零、网页与故障恢复代码，
-包含 44 文件算法源码快照、内容校验及接入说明。此更新需要同版本 Robot Lab 宿主，
-不会通过下面的旧 A2 启动脚本自动生效；旧平台与历史验收保持原样。
+[robot-lab-grasp-place](robot-lab-grasp-place/README.md) 保存同一 Lab 链路的两种候选生成方法：[GraspNet](robot-lab-grasp-place/methods/graspnet/README.md) 和 [GraspGenX](robot-lab-grasp-place/methods/graspgenx/README.md)。两者共用腕部 RGB-D 选点、11 cm TCP、MoveIt 抓取执行、MTC 放置、网页状态机及 [Agent 接口](robot-lab-grasp-place/docs/agent-api.md)。此目录是固定 Robot Lab 宿主的源码 overlay；旧 A2 固定站立平台仍按下文独立使用。
 
 ---
 

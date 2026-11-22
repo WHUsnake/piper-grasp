@@ -1,6 +1,6 @@
 # 抓取算法源码快照
 
-此目录保存网页实际使用的 A2 抓取算法快照，共 44 个源码、消息和配置文件。
+此目录保存本次发布使用的 A2 抓取算法快照，共 44 个源码、消息和配置文件；其中 node、refinement 和 worker_client 已同步两套后端的候选筛选与持久推理通信。
 `manifest.json` 记录逐文件 SHA-256、上游仓库与基准提交，是本分支的算法内容清单。
 `manifests/sources.lock.json` 锁定平台基础依赖，不能单独复现此处的本地改动。
 运行时不自动覆盖使用者已有 A2 工作区。
@@ -18,11 +18,11 @@
 
 ## 为网页适配器构建
 
-先按主 README 准备平台锁定源码（包含 Piper 描述与消息源码）、ROS Humble、MoveIt、
+先按主 README 将此 overlay 安装到完整 Robot Lab（包含 Piper 描述与消息源码），准备 ROS Humble、MoveIt、
 MTC、colcon，以及安装好 GraspNet 编译扩展的独立 Python 环境和所需权重。
 以下命令不下载权重、不安装系统依赖、不启动硬件。
 
-在仓库根目录执行。使用一个**不存在且全为 ASCII 的仓库外路径**保存源码和 ROS 构建，
+在安装 overlay 后的 Robot Lab 宿主根目录执行。使用一个**不存在且全为 ASCII 的仓库外路径**保存源码和 ROS 构建，
 避免 ROS 消息生成工具对中文路径的限制；已有路径须先检查，不覆盖。
 
 ```bash
@@ -55,7 +55,7 @@ cd "$LAB_REPO"
 ./bin/lab --profile hssd-go2-piper doctor --development
 ```
 
-`graspnet.json` 使用环境变量定位 baseline 与权重，权重必须满足其中 SHA-256。
+`graspnet.json` 使用环境变量定位 baseline 与权重，权重必须满足其中 SHA-256。GraspGenX 的独立 worker、官方权重与 PiPER hand 资产须另按主 README 配置；这里不打包官方模型。
 `grasp configure` 保存本机绑定到 Git 忽略的 `config.local.json`。
 平台启动和网页操作见主 README；上述准备不执行抓取。
 本次发布验证了干净副本消息构建和算法导入，尚未在另一台机器完成部署验收。

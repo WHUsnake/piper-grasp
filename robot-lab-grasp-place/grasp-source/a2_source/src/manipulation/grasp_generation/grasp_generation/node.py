@@ -2,6 +2,7 @@
 import json
 import os
 import sys
+import time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 import numpy as np
@@ -39,6 +40,7 @@ class GraspGenerator(Node):
         if self.backend == 'graspnet':
             config = self.get_parameter('graspnet_config').value
             self.cfg = json.loads(Path(config).read_text())
+            self.model_backend = self.cfg.get('backend', 'graspnet')
             python = self.get_parameter('worker_python').value or os.path.expandvars(self.cfg.get('worker_python', ''))
             if not python or python.startswith('${'):
                 python = os.environ.get('GRASPNET_PYTHON', sys.executable)
@@ -51,10 +53,10 @@ class GraspGenerator(Node):
     def diagnostic(self, **data):
         self.status.publish(String(data=json.dumps(data, allow_nan=False, default=lambda v: v.tolist() if isinstance(v, np.ndarray) else float(v))))
 
-    def clear(self, header, reason):
+    def clear(self, header, reason, **details):
         self.published_header = None
         msg = GraspCandidateArray(); msg.header = header; self.pub.publish(msg)
-        self.diagnostic(status=reason, backend=self.backend)
+        self.diagnostic(status=reason, backend=getattr(self, 'model_backend', self.backend), **details)
 
     def bound(self, msg):
         identity = (msg.exporter_session, msg.tracker_session, msg.track_id, msg.class_id)
@@ -94,16 +96,24 @@ class GraspGenerator(Node):
             self.clear(self.published_header, 'published_candidates_expired')
         if self.future is not None and self.future.done():
             header, rb, epoch = self.active
+            stages = {'input_points': len(self.active_geometry[0])}
+            postprocess_started = time.monotonic()
             try:
                 reply = self.future.result()
+                stages['model_rows'] = int(reply.get('raw_model_poses', len(reply.get('rows', []))))
+                stages['worker_adapter_rows'] = len(reply.get('rows', []))
+                if reply.get('worker_adapter_rejected'):
+                    stages['worker_adapter_rejected'] = reply['worker_adapter_rejected']
                 if epoch != self.epoch:
-                    self.clear(header, 'superseded_target')
+                    self.clear(header, 'superseded_target', stages=stages)
                 elif not 0 <= self.age(header) <= self.get_parameter('max_age_sec').value:
-                    self.clear(header, 'inference_output_expired')
+                    self.clear(header, 'inference_output_expired', stages=stages)
                 else:
                     fit=None
                     if self.backend == 'graspnet':
                         proposals, counts = adapt(reply['rows'], rb, self.cfg['adapter'])
+                        stages['adapter_passed'] = len(proposals)
+                        stages['adapter_rejected'] = counts.copy()
                         refinement=self.cfg.get('refinement',{})
                         if refinement.get('enabled',False):
                             points,translation=self.active_geometry
@@ -115,9 +125,11 @@ class GraspGenerator(Node):
                             shape=refinement.get('shape','upright_cylinder')
                             if shape=='upright_cylinder':
                                 proposals,fit=refine_candidates(proposals,world,refinement['tcp_m'])
+                                stages['geometry_passed'] = len(proposals)
                                 if refinement.get('orientation_search',False):proposals=upright_orientation_search(proposals,refinement['tcp_m'],refinement.get('approach_origin_world'),refinement.get('contact_height_fractions',[.5]))
                             elif shape=='near_sphere':
                                 proposals,fit=refine_near_sphere_candidates(proposals,world,refinement['tcp_m'],self.cfg['adapter']['maximum_width_m'],refinement.get('support_surface_z'))
+                                stages['geometry_passed'] = len(proposals)
                                 if refinement.get('orientation_search',False):
                                     proposals=upright_orientation_search(proposals,refinement['tcp_m'],refinement.get('approach_origin_world'))
                                     for c in proposals:
@@ -125,12 +137,16 @@ class GraspGenerator(Node):
                                             c['orientation_adaptation']='near_sphere_network_and_radial_search'
                             elif shape=='box':
                                 proposals,fit=refine_box_candidates(proposals,world,refinement['tcp_m'],refinement['size_m'],refinement['support_surface_z'],self.cfg['adapter']['maximum_width_m'])
+                                stages['geometry_passed'] = len(proposals)
                                 if refinement.get('orientation_search',False):
                                     proposals=upright_orientation_search(proposals,refinement['tcp_m'],refinement.get('approach_origin_world'))
                                     for c in proposals:
                                         if c.get('orientation_adaptation')=='upright_cylinder_network_and_radial_search':c['orientation_adaptation']='box_network_and_radial_search'
                             else:raise ValueError('Unsupported target geometry: '+str(shape))
+                            stages.setdefault('geometry_passed', len(proposals))
+                            stages['orientation_passed'] = len(proposals)
                             proposals=parallel_gripper_symmetries(proposals)[:self.cfg['adapter']['max_candidates']]
+                            stages['symmetry_passed'] = len(proposals)
                             for c in proposals:
                                 c['position']=(rb.T@(np.array(c['position'])-translation)).tolist()
                                 c['quaternion']=Rotation.from_matrix(rb.T@np.asarray(c['rotation_world'])).as_quat().tolist()
@@ -143,15 +159,21 @@ class GraspGenerator(Node):
                         m.pose.position.x,m.pose.position.y,m.pose.position.z = map(float,c['position'])
                         m.pose.orientation.x,m.pose.orientation.y,m.pose.orientation.z,m.pose.orientation.w = map(float,c['quaternion'])
                         m.gripper_width_m = float(c['width']); m.score = float(c['score'])
-                        m.generator = 'graspnet_baseline_preview' if self.backend == 'graspnet' else 'visible_cloud_pca_obb'
+                        m.generator = ('graspgenx_piper_preview' if getattr(self, 'model_backend', '') == 'graspgenx'
+                                       else 'graspnet_baseline_preview' if self.backend == 'graspnet'
+                                       else 'visible_cloud_pca_obb')
                         m.pregrasp_distance_m = float(c.get('pregrasp_distance', .10)); m.lift_distance_m = .12
                         result.candidates.append(m)
                     self.pub.publish(result)
+                    stages['published'] = len(proposals)
                     self.published_header = header if proposals else None
-                    self.diagnostic(status='ready', backend=self.backend, count=len(proposals), rejected=counts,
-                                    inference_sec=reply.get('inference_sec'), candidates=proposals,
+                    self.diagnostic(status='ready', backend=getattr(self, 'model_backend', self.backend), count=len(proposals), rejected=counts,
+                                    stages=stages,
+                                    inference_sec=reply.get('inference_sec'),
+                                    postprocess_sec=time.monotonic()-postprocess_started,
+                                    candidates=proposals,
                                     tcp_geometry_verified=self.cfg.get('tcp_geometry_verified', False),geometry_fit=fit,geometry_frame=self.cfg.get('base_frame'),acquisition_stamp=[header.stamp.sec,header.stamp.nanosec])
-            except Exception as exc: self.clear(header, str(exc))
+            except Exception as exc: self.clear(header, str(exc), stages=stages)
             self.future = None
         if self.future is None and self.pending is not None:
             header, points, rb, epoch, translation = self.pending; self.pending = None

@@ -1,0 +1,9 @@
+{
+  "backend": "graspgenx",
+  "tcp_m": 0.11,
+  "input": "wrist_rgbd_target_point_cloud",
+  "output": "candidate_grasp_poses",
+  "planner": "MoveIt",
+  "execution": "Piper simulated trajectory and gripper",
+  "placement": "shared wrist RGB-D + MTC + bounded descent + release + return_to_zero"
+}
