@@ -29,15 +29,15 @@
 
 ## 已部署上一版如何增量更新
 
-这次发布只替换上面三个抓取运行文件，不覆盖网页、场景 profile、放置代码、`config.local.json`、模型或现有运行目录。先确认当前仿真任务已结束，保存需要保留的现场；然后在已部署的 Robot Lab 宿主旁更新此仓库：
+这次发布只替换上面三个抓取运行文件，不覆盖网页、场景 profile、放置代码、`config.local.json`、模型或现有运行目录。先确认当前仿真任务已结束，保存需要保留的现场；在现有 Robot Lab 宿主旁取得本仓库新版源码：
 
 ```bash
-git -C piper-grasp pull --ff-only origin main
-python3 piper-grasp/robot-lab-grasp-place/update_existing.py --host /path/to/robot-lab
-python3 piper-grasp/robot-lab-grasp-place/update_existing.py --host /path/to/robot-lab --apply
+git clone --branch main git@github.com:WHUsnake/piper-grasp.git piper-grasp-update
+python3 piper-grasp-update/robot-lab-grasp-place/update_existing.py --host /path/to/robot-lab
+python3 piper-grasp-update/robot-lab-grasp-place/update_existing.py --host /path/to/robot-lab --apply
 ```
 
-第一条更新发布仓库，第二条只读核对旧版文件哈希，第三条备份并替换三个文件。如果宿主文件已被自行改动，工具会拒绝覆盖；请对照差异人工合并。按原部署方式重启**仿真抓取服务**后，重新采腕部 RGB-D 选点验证。启动后立即抓取可能尚在预热网格；比较速度时应等服务预热完成。旧版本回退可从更新工具打印的 `*-grasp-update-backup-*` 目录取回三份文件。
+第一条在独立目录取得发布仓库，不改已有检出；第二条只读核对旧版文件哈希；第三条备份并替换三个文件。如果宿主文件已被自行改动，工具会拒绝覆盖；请对照差异人工合并。按原部署方式重启**仿真抓取服务**后，重新采腕部 RGB-D 选点验证。启动后立即抓取可能尚在预热网格；比较速度时应等服务预热完成。旧版本回退可从更新工具打印的 `*-grasp-update-backup-*` 目录取回三份文件。
 
 ## 结论边界
 
