@@ -2,6 +2,7 @@
 import base64
 import json
 import math
+import os
 import socketserver
 import threading
 import time
@@ -586,6 +587,7 @@ class GraspWorld:
         self.fault = None
         self.fault_details = None
         self.settling = False
+        self.stance_prevalidated = False
         self.stance_history = []
         self.stable_since = None
         self.target_body = 'bottle'
@@ -665,11 +667,26 @@ class GraspWorld:
         self.thread = threading.Thread(target=self.serve, daemon=True)
         self.thread.start()
         self.record.write_text(json.dumps({'socket': str(self.socket), 'session': self.session}))
+        # Precompute fixed collision meshes while the operator observes the scene.
+        # A task still exports current robot and target transforms.
+        def warm_export():
+            import shutil
+            directory = self.workspace/'runs'/('.mesh-warm-'+self.session)
+            try:
+                with self.lock:
+                    export_model(self.world, directory, self.workspace)
+            except Exception as error:
+                print('Collision mesh prewarm deferred: '+str(error), flush=True)
+            finally:
+                shutil.rmtree(directory, ignore_errors=True)
+        self.warm_thread = threading.Thread(target=warm_export, daemon=True)
+        self.warm_thread.start()
 
     def close(self):
         self.server.shutdown()
         self.server.server_close()
         self.socket.unlink(missing_ok=True)
+        self.warm_thread.join(timeout=5)
 
     def serve(self):
         try:
@@ -1064,9 +1081,10 @@ class GraspWorld:
             self.trajectory = None
             self.result = {'state': 'failed', 'error': self.fault}
             world.arm_target = data.qpos[world.arm_qi].copy()
-        if self.settling:
-            self.stance_history.append((data.time, data.qpos[:7].copy()))
-            self.stance_history = [entry for entry in self.stance_history if data.time-entry[0] <= 2.1]
+        # Keep a measured pose window before target selection so an already
+        # stationary base needs only a fresh post-reservation check.
+        self.stance_history.append((data.time, data.qpos[:7].copy()))
+        self.stance_history = [entry for entry in self.stance_history if data.time-entry[0] <= 3.1]
         if self.owner and not self.holding and not self.place_release_active:
             displacement = np.linalg.norm(data.qpos[:3]-self.base_position)
             angle = 2*math.acos(min(1., abs(float(np.dot(data.qpos[3:7], self.base_quaternion)))))
@@ -1173,8 +1191,9 @@ class GraspWorld:
             self.fault = None
             self.fault_details = None
             self.settling = request.get('stabilize') is True
-            self.stance_history = []
             if self.settling:
+                self.stance_prevalidated = (self.stable_since is not None and
+                                            time.monotonic()-self.stable_since >= 3.)
                 world.begin_stance_hold()
                 self.stance_started = data.time
             self.initial_bottle = data.body('bottle').xpos.copy()
@@ -1429,7 +1448,8 @@ class GraspWorld:
         if self.fault:
             raise RuntimeError(self.fault)
         if method == 'planning_snapshot':
-            if self.settling and data.time-self.stance_started >= 3. and len(self.stance_history) >= 2:
+            ready_window = (self.stance_prevalidated and data.time-self.stance_started >= .1) or data.time-self.stance_started >= 3.
+            if self.settling and ready_window and len(self.stance_history) >= 2:
                 history = self.stance_history
                 recent = [pose for stamp, pose in history if data.time-stamp <= 2.]
                 moved = max(np.linalg.norm(pose[:3]-data.qpos[:3]) for pose in recent)
@@ -1482,8 +1502,8 @@ class GraspWorld:
                 world.mj.mj_forward(model, snapshot)
                 if self.arm_collision(snapshot):
                     raise RuntimeError('Preset path collides; no motion was started')
-            duration = (max(4., float(np.max(np.abs(target-start)))/.12) if held_return else
-                        max(2.5, float(np.max(np.abs(target-start)))/.24))
+            duration = (max(3., float(np.max(np.abs(target-start)))/.24) if held_return else
+                        max(2., float(np.max(np.abs(target-start)))/.48))
             hold_delay = .5 if held_return else 0.
             if held_return:
                 # Preserve the original closed-jaw target. Recomputing it from the
@@ -1576,9 +1596,12 @@ class GraspWorld:
 
 
 def export_model(world, directory, workspace, selected_world=None, selected_body=None):
+    import hashlib
+    import shutil
     import struct
     import xml.etree.ElementTree as ET
     from scipy.spatial.transform import Rotation
+    export_started = time.monotonic()
     np, model, data = world.np, world.model, world.data
     target_body = 'bottle'
     if selected_body is not None:
@@ -1610,6 +1633,25 @@ def export_model(world, directory, workspace, selected_world=None, selected_body
     directory.mkdir(parents=True, exist_ok=True)
     meshes = directory/'meshes'
     meshes.mkdir(exist_ok=True)
+    # Collision topology is fixed, but live robot and target poses are not.
+    if not hasattr(world, '_export_geoms_by_body'):
+        by_body = [[] for _ in range(model.nbody)]
+        for geom_id in range(model.ngeom):
+            if model.geom_contype[geom_id] or model.geom_conaffinity[geom_id]:
+                by_body[int(model.geom_bodyid[geom_id])].append(geom_id)
+        world._export_geoms_by_body = by_body
+    if not hasattr(world, '_export_mesh_cache'):
+        world._export_mesh_cache = {}
+        from integration.paths import REPOSITORY
+        bundle = (world.assets/'bundle.json').read_bytes()
+        profile = (REPOSITORY/'profiles/hssd-go2-piper.json').read_bytes()
+        local_path = REPOSITORY/'config.local.json'
+        local = json.loads(local_path.read_text()) if local_path.is_file() else {}
+        tcp = (local.get('go2_grasp') or {}).get('tcp_m', .11)
+        variant = json.dumps({'tcp_m': tcp}, sort_keys=True).encode()
+        cache_key = hashlib.sha256(b'go2-collision-stl-v3\0'+bundle+profile+variant).hexdigest()[:24]
+        world._export_mesh_cache_dir = workspace/'builds'/'grasp-mesh-cache'/cache_key
+        world._export_mesh_cache_dir.mkdir(parents=True, exist_ok=True)
     robot = ET.Element('robot', name='go2_piper_live')
     ET.SubElement(robot, 'link', name='world')
     links, parents = {0: 'world'}, {}
@@ -1624,15 +1666,35 @@ def export_model(world, directory, workspace, selected_world=None, selected_body
             mesh_id = int(model.geom_dataid[index])
             path = meshes/(str(mesh_id)+'.stl')
             if not path.exists():
-                vertices = model.mesh_vert[model.mesh_vertadr[mesh_id]:model.mesh_vertadr[mesh_id]+model.mesh_vertnum[mesh_id]]
-                faces = model.mesh_face[model.mesh_faceadr[mesh_id]:model.mesh_faceadr[mesh_id]+model.mesh_facenum[mesh_id]]
-                with path.open('wb') as output:
-                    output.write(b'Live Go2 collision mesh'.ljust(80, b'\0')+struct.pack('<I', len(faces)))
-                    for face in faces:
-                        triangle = vertices[face]
-                        normal = np.cross(triangle[1]-triangle[0], triangle[2]-triangle[0])
-                        normal /= max(float(np.linalg.norm(normal)), 1e-20)
-                        output.write(struct.pack('<12fH', *normal, *triangle.flatten(), 0))
+                cached = world._export_mesh_cache.get(mesh_id)
+                if cached is None:
+                    cached = world._export_mesh_cache_dir/(str(mesh_id)+'.stl')
+                    faces = model.mesh_face[model.mesh_faceadr[mesh_id]:model.mesh_faceadr[mesh_id]+model.mesh_facenum[mesh_id]]
+                    expected_size = 84+50*len(faces)
+                    checksum = cached.with_suffix('.sha256')
+                    valid_cache = (cached.is_file() and checksum.is_file() and
+                                   cached.stat().st_size == expected_size and
+                                   hashlib.sha256(cached.read_bytes()).hexdigest() == checksum.read_text().strip())
+                    if not valid_cache:
+                        vertices = model.mesh_vert[model.mesh_vertadr[mesh_id]:model.mesh_vertadr[mesh_id]+model.mesh_vertnum[mesh_id]]
+                        staging = cached.with_name(cached.name+'.'+uuid.uuid4().hex+'.tmp')
+                        try:
+                            with staging.open('wb') as output:
+                                output.write(b'Live Go2 collision mesh'.ljust(80, b'\0')+struct.pack('<I', len(faces)))
+                                for face in faces:
+                                    triangle = vertices[face]
+                                    normal = np.cross(triangle[1]-triangle[0], triangle[2]-triangle[0])
+                                    normal /= max(float(np.linalg.norm(normal)), 1e-20)
+                                    output.write(struct.pack('<12fH', *normal, *triangle.flatten(), 0))
+                            checksum.write_text(hashlib.sha256(staging.read_bytes()).hexdigest())
+                            os.replace(staging, cached)
+                        finally:
+                            staging.unlink(missing_ok=True)
+                    world._export_mesh_cache[mesh_id] = cached
+                try:
+                    os.link(cached, path)
+                except OSError:
+                    shutil.copyfile(cached, path)
             ET.SubElement(geometry, 'mesh', filename=path.as_uri())
         elif kind == 6:
             ET.SubElement(geometry, 'box', size=text(2*size))
@@ -1660,9 +1722,8 @@ def export_model(world, directory, workspace, selected_world=None, selected_body
         parent = links[parent_id]
         parents[name] = parent
         link = ET.SubElement(robot, 'link', name=name)
-        for index in range(model.ngeom):
-            if model.geom_bodyid[index] == body_id and (model.geom_contype[index] or model.geom_conaffinity[index]):
-                collision(link, index, model.geom_pos[index], Rotation.from_quat(model.geom_quat[index][[1, 2, 3, 0]]).as_matrix())
+        for index in world._export_geoms_by_body[body_id]:
+            collision(link, index, model.geom_pos[index], Rotation.from_quat(model.geom_quat[index][[1, 2, 3, 0]]).as_matrix())
         joint_id = int(model.body_jntadr[body_id])
         active = bool(model.body_jntnum[body_id]) and model.joint(joint_id).name in arm_names
         joint = ET.SubElement(robot, 'joint', name=model.joint(joint_id).name if active else name+'_fixed',
@@ -1685,15 +1746,15 @@ def export_model(world, directory, workspace, selected_world=None, selected_body
     fixed = ET.SubElement(robot, 'joint', name='hssd_collision_fixed', type='fixed')
     ET.SubElement(fixed, 'parent', link='world')
     ET.SubElement(fixed, 'child', link='hssd_collision_world')
-    for index in range(model.ngeom):
-        if model.geom_bodyid[index] == 0 and (model.geom_contype[index] or model.geom_conaffinity[index]):
-            # Conservative broad-phase: a rigid world geom whose bounding sphere
-            # is beyond the Piper reach plus margin cannot contact the arm.
-            separation = float(np.linalg.norm(data.geom_xpos[index]-data.body('arm_base').xpos)
-                               - model.geom_rbound[index])
-            if separation > 1.1:
-                continue
-            collision(environment, index, data.geom_xpos[index], data.geom_xmat[index].reshape(3, 3))
+    for index in world._export_geoms_by_body[0]:
+        # Conservative broad-phase: a rigid world geom whose bounding sphere
+        # is beyond the Piper reach plus margin cannot contact the arm.
+        separation = float(np.linalg.norm(data.geom_xpos[index]-data.body('arm_base').xpos)
+                           - model.geom_rbound[index])
+        if separation > 1.1:
+            continue
+        collision(environment, index, data.geom_xpos[index], data.geom_xmat[index].reshape(3, 3))
+    geometry_ready = time.monotonic()
     semantic = ET.Element('robot', name='go2_piper_live')
     group = ET.SubElement(semantic, 'group', name='arm')
     ET.SubElement(group, 'chain', base_link='arm_base', tip_link='link6')
@@ -1715,6 +1776,7 @@ def export_model(world, directory, workspace, selected_world=None, selected_body
         for other in names[index+1:]:
             if assembly(name) == assembly(other):
                 ET.SubElement(semantic, 'disable_collisions', link1=name, link2=other, reason='RigidAssembly')
+    semantic_ready = time.monotonic()
     aliases = {'link7': 'p_link7', 'link8': 'p_link8'}
     for link in robot.findall('link'):
         link.set('name', aliases.get(link.get('name'), link.get('name')))
@@ -1730,7 +1792,10 @@ def export_model(world, directory, workspace, selected_world=None, selected_body
     (directory/'robot.urdf').write_text(description)
     (directory/'robot.srdf').write_text(srdf)
     return {'robot_description': description, 'robot_description_semantic': srdf,
-            'arm_origin': data.body('arm_base').xpos.tolist(), 'target_body': target_body}
+            'arm_origin': data.body('arm_base').xpos.tolist(), 'target_body': target_body,
+            'export_timing_sec': {'geometry': round(geometry_ready-export_started, 6),
+                                  'semantic': round(semantic_ready-geometry_ready, 6),
+                                  'serialize_and_write': round(time.monotonic()-semantic_ready, 6)}}
 
 
 def run_pose(request_path):

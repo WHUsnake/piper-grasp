@@ -7,7 +7,7 @@
   "files": [
     {
       "path": "README.md",
-      "sha256": "03cc45eccb237d304f09348ceb719819fc6083c981a5c3db4e1f6ad47c6550ee",
+      "sha256": "9ec6bdc9e6c955c5943e9bba0f6cb65613d852bbdcc1bea1f718704c3e578b04",
       "overlay_to_robot_lab": false
     },
     {
@@ -29,6 +29,11 @@
       "path": "docs/grasp-place.md",
       "sha256": "84d39462718ba1ae265d5a612cd9d0a6cf67593578c30329a187138d9d84aed5",
       "overlay_to_robot_lab": true
+    },
+    {
+      "path": "docs/speed-report.md",
+      "sha256": "4b0b1025f5fec38abcc10dbb76b2e167b78e034c425aa796897b99ec31846b58",
+      "overlay_to_robot_lab": false
     },
     {
       "path": "docs/validation.md",
@@ -272,7 +277,7 @@
     },
     {
       "path": "integration/integration/arm_trajectory.py",
-      "sha256": "b6bfa9b9681a7261e0d8d5ff8855a0f3a23ff66849dd2d03f54853b571bbc450",
+      "sha256": "32e92b8fbcf4fedfa2dc9c2071ef749bdfe5e016c364cba31509ba0e4781906b",
       "overlay_to_robot_lab": true
     },
     {
@@ -282,12 +287,12 @@
     },
     {
       "path": "integration/integration/go2_grasp.py",
-      "sha256": "7f1c368a297b38db569b6258124fbcfe56de75c049e624a2057289127b7f6c7e",
+      "sha256": "0d5a9c2eccca0be30911c7deb9fcc8788bf3f5f3f0a2da00d5b2f587defea0f0",
       "overlay_to_robot_lab": true
     },
     {
       "path": "integration/integration/go2_grasp_ros.py",
-      "sha256": "3ed30be9a885b70278ab269304af8195960032477e4e7055de7eae72233388e9",
+      "sha256": "800dd2e8a235fa5192a1b250da4304ee141729b359be4067103565e0ae9e4302",
       "overlay_to_robot_lab": true
     },
     {
@@ -394,6 +399,11 @@
       "path": "profiles/hssd-go2-piper.json",
       "sha256": "0474910a942c8a7b45bc635f1fdc07846ce014aaee672e8d4ad8495f05cd7eaf",
       "overlay_to_robot_lab": true
+    },
+    {
+      "path": "update_existing.py",
+      "sha256": "c4ab215bfb4373b9e3c35289377b604387318b376b56be03478d2aed6f2ad139",
+      "overlay_to_robot_lab": false
     }
   ]
 }

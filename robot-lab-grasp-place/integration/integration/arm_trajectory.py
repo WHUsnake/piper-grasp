@@ -26,9 +26,10 @@ class JointPath:
         if len(self.times)<2 or not 0<self.times[-1]<=max_duration:raise ValueError('Empty, untimed or overlong trajectory')
         if np.max(np.abs(self.positions[0]-measured))>.02:raise ValueError('Trajectory start differs from measured joints')
         self.times=np.asarray(self.times);self.positions=np.asarray(self.positions)
-        # Scale down only, preserving the checked joint-space line segments.
+        # Preserve the checked joint-space line segments. Retiming may use the
+        # exported simulation joint limit; do not impose a second, lower cap.
         velocity=np.abs(np.diff(self.positions,axis=0))/np.diff(self.times)[:,None]
-        maximum=np.array([.8]*5+[.5])  # Conservative simulation cap below exported 1.2 rad/s.
+        maximum=np.full(6, 1.2)
         factor=max(1.,float(np.max(velocity/maximum)))
         self.times*=factor
         if self.times[-1]>max_duration:raise ValueError('Scaled trajectory exceeds motion budget')

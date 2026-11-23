@@ -237,10 +237,33 @@ def main():
     successful_hold = False
     backend = request.get('backend', 'graspnet')
     pipeline_started = time.monotonic()
+    pipeline_started_unix = time.time()
+    timing_lock = threading.Lock()
+    timing_events = []
+    timing_names = set()
+    interface_calls = {}
+    def record_interface(name, duration):
+        with timing_lock:
+            row = interface_calls.setdefault(name, {'count': 0, 'total_sec': 0., 'max_sec': 0.})
+            row['count'] += 1
+            row['total_sec'] += duration
+            row['max_sec'] = max(row['max_sec'], duration)
+    def mark(name):
+        """One timestamp per stage, shared by ROS callbacks and the main worker."""
+        with timing_lock:
+            if name not in timing_names:
+                timing_names.add(name)
+                timing_events.append({'stage': name, 'elapsed_sec': round(time.monotonic()-pipeline_started, 6),
+                                      'unix_sec': time.time()})
+    mark('worker_started')
     node = executor = None
 
     def rpc(method, **values):
-        return call(socket, method, owner=owner, session=session, **values)
+        started = time.monotonic()
+        try:
+            return call(socket, method, owner=owner, session=session, **values)
+        finally:
+            record_interface('sim_rpc:'+method, time.monotonic()-started)
 
     def write(name, value):
         (directory/name).write_text(json.dumps(value, indent=2, allow_nan=False))
@@ -269,6 +292,7 @@ def main():
             if checked.returncode:
                 raise RuntimeError('Executor dependency check failed; run bin/lab grasp prepare; see '+
                                    str(directory/'executor_preflight.log'))
+            mark('executor_preflight_done')
         # A just-finished observation pose can leave a brief settling motion.
         # Wait only for this pre-motion condition; never retry executed motion.
         reserve_deadline = time.monotonic()+5.
@@ -281,6 +305,7 @@ def main():
                     raise
                 time.sleep(.1)
         reserved = True
+        mark('robot_reserved')
         if state['session'] != session or not state['simulated']:
             raise RuntimeError('World identity changed; no operation permitted')
         deadline = time.monotonic()+20
@@ -292,7 +317,9 @@ def main():
                 raise RuntimeError('Base did not settle within 20 seconds; no planning snapshot accepted')
             time.sleep(.1)
         write('planning_snapshot.json', state)
+        mark('planning_snapshot_ready')
         frame = rpc('capture', camera=request['camera'])
+        mark('rgbd_captured')
         expected = request.get('expected_camera')
         if expected:
             moved = np.linalg.norm(np.asarray(frame['translation'])-expected['translation'])
@@ -315,6 +342,7 @@ def main():
         depth = depth.copy()
         depth[self_mask] = np.nan
         np.save(directory/'depth.npy', depth)
+        mark('rgbd_validated_and_saved')
         if request['operation'] == 'capture':
             write('result.json', {'passed': True, 'operation': 'capture', 'motion_executed': False})
             print('Live RGB-D captured: '+str(directory/'camera_rgb.png'))
@@ -382,6 +410,7 @@ def main():
             raise RuntimeError('Observed object support is not a reliable horizontal plane')
         object_bottom[2] = float(center[2]-np.dot(normal[:2], np.asarray(object_bottom[:2])-center[:2])/normal[2])
         exported = rpc('export', directory=str(directory), selected_world=segmentation['centroid_world_m'])
+        write('export-timing.json', exported['export_timing_sec'])
         tcp_audit = tcp_geometry_audit(exported['robot_description'], request['tcp_m'])
         write('tcp-geometry-audit.json', tcp_audit)
         if not tcp_audit['simulation_geometry_consistent']:
@@ -431,6 +460,7 @@ def main():
             raise ValueError(f'Unknown grasp backend: {backend}')
         grasp['backend'] = backend
         write('graspnet.json', grasp)
+        mark('robot_and_algorithm_config_ready')
 
         import rclpy
         from rclpy.action import ActionServer, CancelResponse, GoalResponse
@@ -467,10 +497,11 @@ def main():
                 self.create_subscription(SelectedGrasp, '/planner/selected_grasp', self.selection, 2)
                 self.create_subscription(GraspCandidateArray, '/grasp/candidates', self.candidate, 2)
                 self.create_subscription(String, '/grasp/diagnostics', self.grasp_diagnostic, 10)
-                self.create_subscription(String, '/task/status', lambda message: setattr(self, 'state', message.data), 10)
+                self.create_subscription(String, '/task/status', self.task_status, 10)
                 self.motion_lock = threading.RLock()
                 self.pending_gripper = None
                 self.grasp_anchor = None
+                self.arm_motion_commanded = False
                 self.create_subscription(Float64, '/sim/gripper/command', self.gripper, 2)
                 self.create_subscription(String, '/planner/diagnostics', lambda message: (directory/'planner_diagnostics.json').write_text(message.data), 2)
                 self.create_service(Trigger, '/sim/ready', self.ready)
@@ -491,6 +522,13 @@ def main():
             def candidate(self, message):
                 self.candidates = message
                 self.had_candidates = self.had_candidates or bool(message.candidates)
+                if message.candidates:
+                    mark('first_candidates_received')
+
+            def task_status(self, message):
+                self.state = message.data
+                if self.state in ('APPROACH', 'CLOSE', 'LIFT', 'HOLDING'):
+                    mark('executor_state_'+self.state.lower())
 
             def grasp_diagnostic(self, message):
                 try:
@@ -530,6 +568,8 @@ def main():
                     current = rpc('feedback')
                     if current['fault']:
                         raise RuntimeError(current['fault'])
+                    if self.arm_motion_commanded and max(abs(value) for value in current['velocities']) > .02:
+                        mark('first_measured_arm_motion')
                     stamp = self.get_clock().now().to_msg()
                     message = JointState()
                     message.header.stamp = stamp
@@ -583,7 +623,8 @@ def main():
                     self.error = 'Unplanned gripper command rejected'
                     return
                 try:
-                    width = float(message.data)
+                    requested_width = float(message.data)
+                    width = requested_width
                     if width == 0.:
                         radius = float(self.selected.observed_object_radius_m)
                         if not np.isfinite(radius) or not .008 <= radius <= .04:
@@ -591,6 +632,7 @@ def main():
                         width = max(0., 2*radius-.005)
                     with self.motion_lock:
                         current = rpc('feedback')
+                        mark('gripper_close_command' if requested_width == 0. else 'gripper_preopen_command')
                         if (current.get('trajectory') or {}).get('state') == 'running':
                             self.pending_gripper = width
                         else:
@@ -615,9 +657,9 @@ def main():
                         if trajectory.joint_names == path.joint_names and positions(trajectory) == positions(path)), None)
                     if selected_index is None:
                         raise RuntimeError('Trajectory differs from the selected MoveIt paths')
-                    # Retiming stays inside the simulation joint-speed guard;
-                    # the loaded lift keeps its planned timing for grip stability.
-                    speedup = (.65, .9, 1.)[selected_index]
+                    # Retiming stays inside the exported simulation joint-speed
+                    # limit; loaded lift keeps its planned timing for grip stability.
+                    speedup = (.45, .9, 1.)[selected_index]
                     points = []
                     for point in trajectory.points:
                         seconds = (point.time_from_start.sec + point.time_from_start.nanosec/1e9)*speedup
@@ -632,6 +674,10 @@ def main():
                             self.grasp_anchor = rpc('feedback')
                         rpc('trajectory', joint_names=list(trajectory.joint_names), points=points,
                             phase=('pregrasp', 'approach', 'lift')[selected_index])
+                        motion_name = ('pregrasp', 'approach', 'lift')[selected_index]
+                        mark('motion_'+motion_name+'_started')
+                        if selected_index == 0:
+                            self.arm_motion_commanded = True
                     deadline = time.monotonic()+75
                     while time.monotonic() < deadline:
                         if handle.is_cancel_requested or self.closed.is_set() or self.error:
@@ -640,6 +686,7 @@ def main():
                         current = rpc('feedback')
                         state = current['trajectory'] or {}
                         if state.get('state') == 'succeeded':
+                            mark('motion_'+motion_name+'_done')
                             self.flush_gripper()
                             handle.succeed()
                             result.error_code = 0
@@ -672,6 +719,7 @@ def main():
         executor.add_node(node)
         spin = threading.Thread(target=executor.spin, daemon=True)
         spin.start()
+        mark('ros_bridge_ready')
 
         def wait(predicate, timeout, message):
             deadline = time.monotonic()+timeout
@@ -687,15 +735,19 @@ def main():
             raise RuntimeError(message)
 
         def service(name, timeout=90):
-            client = node.create_client(Trigger, name, callback_group=node.group)
-            if not client.wait_for_service(timeout_sec=10):
-                raise RuntimeError('Service unavailable: '+name)
-            future = client.call_async(Trigger.Request())
-            wait(future.done, timeout, 'Service timeout: '+name)
-            response = future.result()
-            if not response.success:
-                raise RuntimeError(name+': '+response.message)
-            return response
+            started = time.monotonic()
+            try:
+                client = node.create_client(Trigger, name, callback_group=node.group)
+                if not client.wait_for_service(timeout_sec=10):
+                    raise RuntimeError('Service unavailable: '+name)
+                future = client.call_async(Trigger.Request())
+                wait(future.done, timeout, 'Service timeout: '+name)
+                response = future.result()
+                if not response.success:
+                    raise RuntimeError(name+': '+response.message)
+                return response
+            finally:
+                record_interface('ros_service:'+name, time.monotonic()-started)
 
         def ros_node(name, module, parameters):
             command = (['/usr/bin/python3', '-m', 'integration.go2_grasp_ros', 'planner', str(directory/'robot.urdf')]
@@ -728,10 +780,13 @@ def main():
         ros_node('executor', 'task_executor.node', {'execute': False, 'simulation_mode': True,
             'place_after_grasp': False, 'session_id': owner,
             'tool_translation': [0., 0., request['tcp_m']]})
+        mark('ros_nodes_started')
         wait(lambda: node.had_candidates,
              150, f'No fresh {backend} candidates; inspect perception/grasp_generator logs')
+        mark('first_candidates_received')
         service('/planner/preview', 150)
         wait(lambda: node.selected is not None, 5, 'Planner did not publish the selected path')
+        mark('moveit_plan_selected')
         if request['operation'] == 'preview':
             write('result.json', {'passed': True, 'operation': 'preview', 'motion_executed': False,
                                  'backend': backend, 'pipeline': 'local_perception_'+backend+'_MoveIt'})
@@ -741,10 +796,13 @@ def main():
              0 <= node.get_clock().now().nanoseconds/1e9-(node.candidates.header.stamp.sec+
                  node.candidates.header.stamp.nanosec/1e9) < .4,
              15, 'No fresh execution-time target observation')
+        mark('fresh_execution_observation_ready')
         execution_started = True
         service('/sim/task/start', 10)
+        mark('executor_start_accepted')
         wait(lambda: node.state == 'HOLDING' or node.state.startswith('RECOVERY_REQUIRED'),
              180, 'Executor did not reach HOLDING')
+        mark('executor_holding')
         if node.state != 'HOLDING':
             raise RuntimeError(node.state)
         held_feedback = rpc('hold_confirmed')
@@ -776,7 +834,9 @@ def main():
               'contact_samples': sum(row['contact_force'] >= .1 for row in evidence)})
         if min(row['bottle_lift'] for row in evidence) < .05 or offset_spread > .025:
             raise RuntimeError('HOLDING lacks sustained object lift and relative-pose evidence')
+        mark('lift_evidence_confirmed')
         zero_motion = rpc('preset', positions=[0.]*6, held_return=True)
+        mark('held_return_started')
         write('held-return-zero.json', zero_motion)
         deadline = time.monotonic()+60
         while time.monotonic() < deadline:
@@ -791,6 +851,7 @@ def main():
             time.sleep(.1)
         else:
             raise RuntimeError('Held return to zero timed out')
+        mark('held_return_done')
         returned_evidence = []
         for unused in range(30):
             returned_evidence.append(rpc('evidence'))
@@ -810,6 +871,7 @@ def main():
         # height over the original tabletop is no longer a grasp validity test.
         if not all(row.get('hold_valid', False) for row in returned_evidence) or offset_spread > .025:
             raise RuntimeError('Return to zero lost the held object')
+        mark('held_return_evidence_confirmed')
         deadline = time.monotonic()+2.
         while True:
             try:
@@ -821,12 +883,14 @@ def main():
                 time.sleep(.1)
         write('drive-enabled.json', drive_state)
         successful_hold = True
+        mark('grasp_completed')
         write('result.json', {'passed': True, 'operation': 'run', 'motion_executed': True,
                              'holding': True, 'returned_to_zero': True, 'drive_enabled': True,
                              'backend': backend, 'pipeline': 'local_perception_'+backend+'_MoveIt_TaskExecutor'})
         print('Grasp and held return to zero physically verified; ownership retained. No automatic release/reset.')
         return 0
     except Exception as error:
+        mark('grasp_failed')
         if reserved:
             try:
                 write('failure_feedback.json', rpc('feedback'))
@@ -837,6 +901,26 @@ def main():
         print('ERROR: '+str(error), file=sys.stderr)
         return 1
     finally:
+        with timing_lock:
+            ordered = sorted(timing_events, key=lambda event: event['elapsed_sec'])
+            calls = {name: dict(row) for name, row in interface_calls.items()}
+        durations = [{'from': first['stage'], 'to': second['stage'],
+                      'duration_sec': round(second['elapsed_sec']-first['elapsed_sec'], 6)}
+                     for first, second in zip(ordered, ordered[1:])]
+        write('stage-timings.json', {'backend': backend, 'operation': request['operation'],
+              'clock': 'time.monotonic (process-local)', 'started_unix_sec': pipeline_started_unix,
+              'events': ordered, 'intervals': durations,
+              'interface_calls': {name: {'count': row['count'],
+                  'total_sec': round(row['total_sec'], 6), 'max_sec': round(row['max_sec'], 6)}
+                  for name, row in sorted(calls.items())},
+              'interface_flow': [
+                  'HTTP /api/grasp/action -> GraspPanel.submit -> ROS worker',
+                  'sim_rpc:reserve -> planning_snapshot -> capture (wrist RGB-D)',
+                  'ROS /camera/color/image_raw + /camera/depth/image_raw -> perception',
+                  'perception target cloud -> grasp_generator -> grasp candidates',
+                  'ros_service:/planner/preview -> MoveIt selected trajectories',
+                  'ros_service:/sim/task/start -> sim_rpc:trajectory (pregrasp, approach, lift) + gripper',
+                  'sim_rpc:hold_confirmed -> evidence -> preset (held zero) -> enable_drive']})
         if node:
             node.closed.set()
         for name, process in reversed(processes):
